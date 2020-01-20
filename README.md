@@ -80,3 +80,5 @@ final Widget button = SizedBox(
   ),
 );
 ```
+
+For a more detail example please take a look at the `example` folder.
