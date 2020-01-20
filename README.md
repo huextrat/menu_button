@@ -87,8 +87,8 @@ For a more detail example please take a look at the `example` folder.
 
 Menu button with 3 items:
 
-<img src="example/example.gif" width="400" height="790">
+<img src="https://raw.githubusercontent.com/huextrat/menu_button/master/example/example.gif" width="400" height="790">
 
-##
+## -
 
 If something is missing, feel free to open a ticket or contribute!
