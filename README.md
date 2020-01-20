@@ -1,5 +1,7 @@
 # menu_button
 
+[![pub package](https://img.shields.io/pub/v/menu_button.svg?style=for-the-badge&color=blue)](https://pub.dartlang.org/packages/menu_button)
+
 A popup menu button widget with handsome design and easy to use.
 
 ## Installation
