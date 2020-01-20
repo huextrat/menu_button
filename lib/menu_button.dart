@@ -3,7 +3,6 @@ library menu_button;
 import 'package:flutter/material.dart';
 
 class MenuButton<T> extends StatefulWidget {
-
   final Widget child;
   final Widget toggledChild;
   final MenuItemBuilder<T> itemBuilder;
@@ -22,7 +21,7 @@ class MenuButton<T> extends StatefulWidget {
     final this.topDivider = true,
     final this.onItemSelected,
     final this.decoration,
-  }) : assert(child != null),
+  })  : assert(child != null),
         assert(items != null),
         assert(itemBuilder != null);
 
@@ -31,27 +30,26 @@ class MenuButton<T> extends StatefulWidget {
 }
 
 class _MenuButtonState<T> extends State<MenuButton<T>> {
-
   @override
   Widget build(BuildContext context) => InkWell(
-    child: Container(
-        decoration: widget.decoration,
-        child: widget.child
-    ),
-    onTap: togglePopup,
-  );
+        child: Container(decoration: widget.decoration, child: widget.child),
+        onTap: togglePopup,
+      );
 
   void togglePopup() {
-    final List<Widget> items = widget.items.map((value) => _MenuItem(
-      value: value,
-      child: widget.itemBuilder(value),
-    )).toList();
+    final List<Widget> items = widget.items
+        .map((value) => _MenuItem(
+              value: value,
+              child: widget.itemBuilder(value),
+            ))
+        .toList();
     final RenderBox button = context.findRenderObject();
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
         button.localToGlobal(const Offset(0, 0), ancestor: overlay),
-        button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero),
+            ancestor: overlay),
       ),
       Offset.zero & overlay.size,
     );
@@ -66,35 +64,34 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         topDivider: widget.topDivider,
         decoration: widget.decoration,
       ).then<void>((T newValue) {
-        if (mounted &&
-            newValue != null &&
-            widget.onItemSelected != null) {
+        if (mounted && newValue != null && widget.onItemSelected != null) {
           widget.onItemSelected(newValue);
         }
       });
     }
   }
 
-  Future<T> _togglePopup({
-    @required BuildContext context,
-    @required RelativeRect position,
-    @required List<Widget> items,
-    Widget toggledChild,
-    Widget divider,
-    bool topDivider,
-    BoxDecoration decoration
-  }) => Navigator.push(context, _MenuRoute<T>(
-    position: position,
-    items: items,
-    toggledChild: toggledChild,
-    divider: divider,
-    topDivider: topDivider,
-    decoration: decoration,
-  ));
+  Future<T> _togglePopup(
+          {@required BuildContext context,
+          @required RelativeRect position,
+          @required List<Widget> items,
+          Widget toggledChild,
+          Widget divider,
+          bool topDivider,
+          BoxDecoration decoration}) =>
+      Navigator.push(
+          context,
+          _MenuRoute<T>(
+            position: position,
+            items: items,
+            toggledChild: toggledChild,
+            divider: divider,
+            topDivider: topDivider,
+            decoration: decoration,
+          ));
 }
 
 class _MenuRoute<T> extends PopupRoute<T> {
-
   final RelativeRect position;
   final List<Widget> items;
   final Widget toggledChild;
@@ -125,13 +122,14 @@ class _MenuRoute<T> extends PopupRoute<T> {
 
   @override
   Animation<double> createAnimation() => CurvedAnimation(
-    parent: super.createAnimation(),
-    curve: Curves.easeOutCubic,
-    reverseCurve: Curves.easeInCubic,
-  );
+        parent: super.createAnimation(),
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      );
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) =>
+  Widget buildPage(BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation) =>
       MediaQuery.removePadding(
         context: context,
         removeTop: true,
@@ -166,10 +164,12 @@ class _MenuRouteLayout extends SingleChildLayoutDelegate {
   }
 
   @override
-  Offset getPositionForChild(Size size, Size childSize) => Offset(position.left, position.top);
+  Offset getPositionForChild(Size size, Size childSize) =>
+      Offset(position.left, position.top);
 
   @override
-  bool shouldRelayout(_MenuRouteLayout oldDelegate) => position != oldDelegate.position;
+  bool shouldRelayout(_MenuRouteLayout oldDelegate) =>
+      position != oldDelegate.position;
 }
 
 class _Menu<T> extends StatelessWidget {
@@ -196,7 +196,8 @@ class _Menu<T> extends StatelessWidget {
       }
     }
 
-    final CurveTween opacity = CurveTween(curve: const Interval(0.0, 1.0 / 8.0));
+    final CurveTween opacity =
+        CurveTween(curve: const Interval(0.0, 1.0 / 8.0));
     final CurveTween height = CurveTween(curve: const Interval(0.0, .9));
     final CurveTween shadow = CurveTween(curve: const Interval(0.0, 1.0 / 4.0));
 
@@ -204,59 +205,49 @@ class _Menu<T> extends StatelessWidget {
       color: Colors.transparent,
       child: AnimatedBuilder(
         animation: route.animation,
-        builder: (BuildContext context, Widget child) =>
-            Opacity(
-              opacity: opacity.evaluate(route.animation),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: route.decoration.border,
-                  borderRadius: route.decoration.borderRadius,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color.fromARGB(
-                            (20 * shadow.evaluate(route.animation)).toInt(),
-                            0,
-                            0,
-                            0
+        builder: (BuildContext context, Widget child) => Opacity(
+          opacity: opacity.evaluate(route.animation),
+          child: Container(
+            decoration: BoxDecoration(
+              border: route.decoration.border,
+              borderRadius: route.decoration.borderRadius,
+              boxShadow: [
+                BoxShadow(
+                    color: Color.fromARGB(
+                        (20 * shadow.evaluate(route.animation)).toInt(),
+                        0,
+                        0,
+                        0),
+                    offset: Offset(0.0, 3.0 * shadow.evaluate(route.animation)),
+                    blurRadius: 5.0 * shadow.evaluate(route.animation))
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: route.decoration.borderRadius,
+              child: IntrinsicWidth(
+                child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  child: ListBody(children: [
+                    _MenuButtonToggledChild(child: route.toggledChild),
+                    Container(
+                      color: route.decoration.color,
+                      child: Align(
+                        alignment: AlignmentDirectional.topStart,
+                        widthFactor: 1.0,
+                        heightFactor: height.evaluate(route.animation),
+                        child: SingleChildScrollView(
+                          child: ListBody(
+                            children: children,
+                          ),
                         ),
-                        offset: Offset(
-                            0.0,
-                            3.0 * shadow.evaluate(route.animation)
-                        ),
-                        blurRadius: 5.0 * shadow.evaluate(route.animation)
-                    )
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: route.decoration.borderRadius,
-                  child: IntrinsicWidth(
-                    child: SingleChildScrollView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      child: ListBody(
-                          children: [
-                            _MenuButtonToggledChild(
-                                child: route.toggledChild
-                            ),
-                            Container(
-                              color: route.decoration.color,
-                              child: Align(
-                                alignment: AlignmentDirectional.topStart,
-                                widthFactor: 1.0,
-                                heightFactor: height.evaluate(route.animation),
-                                child: SingleChildScrollView(
-                                  child: ListBody(
-                                    children: children,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ]
                       ),
                     ),
-                  ),
+                  ]),
                 ),
               ),
             ),
+          ),
+        ),
       ),
     );
   }
@@ -265,9 +256,7 @@ class _Menu<T> extends StatelessWidget {
 class _MenuButtonToggledChild extends StatelessWidget {
   final Widget child;
 
-  const _MenuButtonToggledChild({
-    @required final this.child
-  });
+  const _MenuButtonToggledChild({@required final this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -282,17 +271,12 @@ class _MenuItem<T> extends StatelessWidget {
   final T value;
   final Widget child;
 
-  const _MenuItem({
-    this.value,
-    @required final this.child
-  });
+  const _MenuItem({this.value, @required final this.child});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () => Navigator.of(context).pop<T>(value),
-        child: child
-    );
+        onTap: () => Navigator.of(context).pop<T>(value), child: child);
   }
 }
 
