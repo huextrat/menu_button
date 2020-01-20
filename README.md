@@ -82,3 +82,13 @@ final Widget button = SizedBox(
 ```
 
 For a more detail example please take a look at the `example` folder.
+
+## Example
+
+Menu button with 3 items:
+
+![example.gif](example/example.gif)
+
+##
+
+If something is missing, feel free to open a ticket or contribute!
