@@ -4,7 +4,7 @@ A popup menu button widget with handsome design and easy to use.
 
 ## Installation
 
-Add `menu_button: ^0.0.1` in your `pubspec.yaml` dependencies. And import it:
+Add `menu_button: ^0.0.1+2` in your `pubspec.yaml` dependencies. And import it:
 
 ```dart
 import 'package:menu_button/menu_button.dart';
@@ -87,7 +87,7 @@ For a more detail example please take a look at the `example` folder.
 
 Menu button with 3 items:
 
-![example.gif](example/example.gif)
+<img src="example/example.gif" width="400" height="790">
 
 ##
 
