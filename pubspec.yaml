@@ -2,7 +2,7 @@ name: menu_button
 description: A menu button widget to select an item in a dropdown list easily customizable
 author: Hugo EXTRAT <extrat.h@gmail.com>
 homepage: https://github.com/huextrat/menu_button
-version: 0.0.2
+version: 0.1.0
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
