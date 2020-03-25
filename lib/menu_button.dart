@@ -11,6 +11,7 @@ class MenuButton<T> extends StatefulWidget {
   final List<T> items;
   final MenuItemSelected<T> onItemSelected;
   final BoxDecoration decoration;
+  final MenuButtonToggleCallback onMenuButtonToggle;
 
   const MenuButton({
     @required final this.child,
@@ -21,6 +22,7 @@ class MenuButton<T> extends StatefulWidget {
     final this.topDivider = true,
     final this.onItemSelected,
     final this.decoration,
+    final this.onMenuButtonToggle
   })  : assert(child != null),
         assert(items != null),
         assert(itemBuilder != null);
@@ -37,6 +39,8 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
       );
 
   void togglePopup() {
+    widget.onMenuButtonToggle(true);
+
     final List<Widget> items = widget.items
         .map((value) => _MenuItem(
               value: value,
@@ -64,6 +68,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         topDivider: widget.topDivider,
         decoration: widget.decoration,
       ).then<void>((T newValue) {
+        widget.onMenuButtonToggle(false);
         if (mounted && newValue != null && widget.onItemSelected != null) {
           widget.onItemSelected(newValue);
         }
@@ -279,6 +284,8 @@ class _MenuItem<T> extends StatelessWidget {
         onTap: () => Navigator.of(context).pop<T>(value), child: child);
   }
 }
+
+typedef MenuButtonToggleCallback = void Function(bool isToggle);
 
 typedef MenuItemBuilder<T> = Widget Function(T value);
 

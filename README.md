@@ -45,6 +45,9 @@ MenuButton(
     borderRadius: const BorderRadius.all(Radius.circular(3.0)),
     color: Colors.white
   ),
+  onMenuButtonToggle: (isToggle) {
+    print(isToggle);
+  },
 )
 ```
 
@@ -62,7 +65,7 @@ final Widget button = SizedBox(
         Flexible(
           child: Text(
             selectedItem,
-            style: Colors.yellow,
+            style: TextStyle(color: Colors.yellow),
             overflow: TextOverflow.ellipsis,
           ),
         ),

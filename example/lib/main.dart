@@ -107,6 +107,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   borderRadius: const BorderRadius.all(Radius.circular(3.0)),
                   color: Colors.white
               ),
+              onMenuButtonToggle: (isToggle) {
+                print(isToggle);
+              },
             ),
           ],
         ),
