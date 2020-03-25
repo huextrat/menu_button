@@ -1,4 +1,4 @@
-## 0.1.1 - 2020-03-25
+## 0.1.1+1 - 2020-03-25
 
 Add `onMenuButtonToggle` callback to find out if menu button is open or not
 
