@@ -12,6 +12,7 @@ class MenuButton<T> extends StatefulWidget {
   final MenuItemSelected<T> onItemSelected;
   final BoxDecoration decoration;
   final MenuButtonToggleCallback onMenuButtonToggle;
+  final ScrollPhysics scrollPhysics;
 
   const MenuButton({
     @required final this.child,
@@ -22,7 +23,8 @@ class MenuButton<T> extends StatefulWidget {
     final this.topDivider = true,
     final this.onItemSelected,
     final this.decoration,
-    final this.onMenuButtonToggle
+    final this.onMenuButtonToggle,
+    final this.scrollPhysics,
   })  : assert(child != null),
         assert(items != null),
         assert(itemBuilder != null);
@@ -67,6 +69,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         divider: widget.divider,
         topDivider: widget.topDivider,
         decoration: widget.decoration,
+        scrollPhysics: widget.scrollPhysics,
       ).then<void>((T newValue) {
         widget.onMenuButtonToggle(false);
         if (mounted && newValue != null && widget.onItemSelected != null) {
@@ -83,7 +86,8 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
           Widget toggledChild,
           Widget divider,
           bool topDivider,
-          BoxDecoration decoration}) =>
+          BoxDecoration decoration,
+          ScrollPhysics scrollPhysics}) =>
       Navigator.push(
           context,
           _MenuRoute<T>(
@@ -93,6 +97,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
             divider: divider,
             topDivider: topDivider,
             decoration: decoration,
+            scrollPhysics: scrollPhysics,
           ));
 }
 
@@ -103,6 +108,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
   final Widget divider;
   final bool topDivider;
   final BoxDecoration decoration;
+  final ScrollPhysics scrollPhysics;
 
   _MenuRoute({
     final this.position,
@@ -111,6 +117,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
     final this.divider,
     final this.topDivider,
     final this.decoration,
+    final this.scrollPhysics,
   });
 
   @override
@@ -133,8 +140,11 @@ class _MenuRoute<T> extends PopupRoute<T> {
       );
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation) =>
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) =>
       MediaQuery.removePadding(
         context: context,
         removeTop: true,
@@ -147,7 +157,10 @@ class _MenuRoute<T> extends PopupRoute<T> {
               delegate: _MenuRouteLayout(
                 position,
               ),
-              child: _Menu<T>(route: this),
+              child: _Menu<T>(
+                route: this,
+                scrollPhysics: scrollPhysics,
+              ),
             );
           },
         ),
@@ -181,9 +194,11 @@ class _Menu<T> extends StatelessWidget {
   const _Menu({
     Key key,
     this.route,
+    this.scrollPhysics,
   }) : super(key: key);
 
   final _MenuRoute<T> route;
+  final ScrollPhysics scrollPhysics;
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +246,7 @@ class _Menu<T> extends StatelessWidget {
               borderRadius: route.decoration.borderRadius,
               child: IntrinsicWidth(
                 child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics: scrollPhysics ?? NeverScrollableScrollPhysics(),
                   child: ListBody(children: [
                     _MenuButtonToggledChild(child: route.toggledChild),
                     Container(

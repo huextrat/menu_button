@@ -32,6 +32,37 @@ class _MyHomePageState extends State<MyHomePage> {
     'Low',
     'Medium',
     'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
+    'High',
   ];
 
   @override
@@ -81,14 +112,14 @@ class _MyHomePageState extends State<MyHomePage> {
             MenuButton(
               child: button,
               items: keys,
+              scrollPhysics: AlwaysScrollableScrollPhysics(),
               topDivider: true,
               itemBuilder: (value) => Container(
                   height: 40,
                   alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
-                  child: Text(
-                    value
-                  )),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
+                  child: Text(value)),
               toggledChild: Container(
                 color: Colors.white,
                 child: button,
@@ -105,8 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey[300]),
                   borderRadius: const BorderRadius.all(Radius.circular(3.0)),
-                  color: Colors.white
-              ),
+                  color: Colors.white),
               onMenuButtonToggle: (isToggle) {
                 print(isToggle);
               },
