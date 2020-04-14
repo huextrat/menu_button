@@ -21,6 +21,8 @@ MenuButton(
   child: button,// Widget displayed as the button
   items: items,// List of your items
   topDivider: true,
+  popupHeight: 200, // This popupHeight is optional. The default height is the size of items
+  scrollPhysics: AlwaysScrollableScrollPhysics(), // Change the physics of opened menu (example: you can remove or add scroll to menu)
   itemBuilder: (value) => Container(
     width: 83,
     height: 40,

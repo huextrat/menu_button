@@ -13,6 +13,7 @@ class MenuButton<T> extends StatefulWidget {
   final BoxDecoration decoration;
   final MenuButtonToggleCallback onMenuButtonToggle;
   final ScrollPhysics scrollPhysics;
+  final double popupHeight;
 
   const MenuButton({
     @required final this.child,
@@ -25,6 +26,7 @@ class MenuButton<T> extends StatefulWidget {
     final this.decoration,
     final this.onMenuButtonToggle,
     final this.scrollPhysics,
+    final this.popupHeight,
   })  : assert(child != null),
         assert(items != null),
         assert(itemBuilder != null);
@@ -70,6 +72,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         topDivider: widget.topDivider,
         decoration: widget.decoration,
         scrollPhysics: widget.scrollPhysics,
+        popupHeight: widget.popupHeight,
       ).then<void>((T newValue) {
         widget.onMenuButtonToggle(false);
         if (mounted && newValue != null && widget.onItemSelected != null) {
@@ -79,15 +82,17 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
     }
   }
 
-  Future<T> _togglePopup(
-          {@required BuildContext context,
-          @required RelativeRect position,
-          @required List<Widget> items,
-          Widget toggledChild,
-          Widget divider,
-          bool topDivider,
-          BoxDecoration decoration,
-          ScrollPhysics scrollPhysics}) =>
+  Future<T> _togglePopup({
+    @required BuildContext context,
+    @required RelativeRect position,
+    @required List<Widget> items,
+    Widget toggledChild,
+    Widget divider,
+    bool topDivider,
+    BoxDecoration decoration,
+    ScrollPhysics scrollPhysics,
+    double popupHeight,
+  }) =>
       Navigator.push(
           context,
           _MenuRoute<T>(
@@ -98,6 +103,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
             topDivider: topDivider,
             decoration: decoration,
             scrollPhysics: scrollPhysics,
+            popupHeight: popupHeight,
           ));
 }
 
@@ -109,6 +115,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
   final bool topDivider;
   final BoxDecoration decoration;
   final ScrollPhysics scrollPhysics;
+  final double popupHeight;
 
   _MenuRoute({
     final this.position,
@@ -118,6 +125,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
     final this.topDivider,
     final this.decoration,
     final this.scrollPhysics,
+    final this.popupHeight,
   });
 
   @override
@@ -160,6 +168,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
               child: _Menu<T>(
                 route: this,
                 scrollPhysics: scrollPhysics,
+                popupHeight: popupHeight,
               ),
             );
           },
@@ -195,10 +204,12 @@ class _Menu<T> extends StatelessWidget {
     Key key,
     this.route,
     this.scrollPhysics,
+    this.popupHeight,
   }) : super(key: key);
 
   final _MenuRoute<T> route;
   final ScrollPhysics scrollPhysics;
+  final double popupHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -228,6 +239,7 @@ class _Menu<T> extends StatelessWidget {
         builder: (BuildContext context, Widget child) => Opacity(
           opacity: opacity.evaluate(route.animation),
           child: Container(
+            height: popupHeight,
             decoration: BoxDecoration(
               border: route.decoration.border,
               borderRadius: route.decoration.borderRadius,
