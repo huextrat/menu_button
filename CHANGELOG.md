@@ -1,8 +1,8 @@
-##0.3.0 - 2020-05-08
+## 1.0.0 - 2020-05-08
 Add crossEdge & edgeMargin configuration
 Update example
 
-##0.2.1 - 2020-04-14 
+## 0.2.1 - 2020-04-14 
 Define scrollPhysics in MenuButton is now available
 
 ## 0.1.1+1 - 2020-03-25
