@@ -14,6 +14,8 @@ class MenuButton<T> extends StatefulWidget {
   final MenuButtonToggleCallback onMenuButtonToggle;
   final ScrollPhysics scrollPhysics;
   final double popupHeight;
+  final bool crossTheEdge;
+  final double edgeMargin;
 
   const MenuButton({
     @required final this.child,
@@ -27,6 +29,8 @@ class MenuButton<T> extends StatefulWidget {
     final this.onMenuButtonToggle,
     final this.scrollPhysics,
     final this.popupHeight,
+    final this.crossTheEdge = false,
+    final this.edgeMargin = 0.0,
   })  : assert(child != null),
         assert(items != null),
         assert(itemBuilder != null);
@@ -73,6 +77,8 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         decoration: widget.decoration,
         scrollPhysics: widget.scrollPhysics,
         popupHeight: widget.popupHeight,
+        edgeMargin: widget.edgeMargin,
+        crossTheEdge: widget.crossTheEdge,
       ).then<void>((T newValue) {
         widget.onMenuButtonToggle(false);
         if (mounted && newValue != null && widget.onItemSelected != null) {
@@ -92,19 +98,24 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
     BoxDecoration decoration,
     ScrollPhysics scrollPhysics,
     double popupHeight,
+    bool crossTheEdge,
+    double edgeMargin,
   }) =>
       Navigator.push(
-          context,
-          _MenuRoute<T>(
-            position: position,
-            items: items,
-            toggledChild: toggledChild,
-            divider: divider,
-            topDivider: topDivider,
-            decoration: decoration,
-            scrollPhysics: scrollPhysics,
-            popupHeight: popupHeight,
-          ));
+        context,
+        _MenuRoute<T>(
+          position: position,
+          items: items,
+          toggledChild: toggledChild,
+          divider: divider,
+          topDivider: topDivider,
+          decoration: decoration,
+          scrollPhysics: scrollPhysics,
+          popupHeight: popupHeight,
+          crossTheEdge: crossTheEdge,
+          edgeMargin: edgeMargin,
+        ),
+      );
 }
 
 class _MenuRoute<T> extends PopupRoute<T> {
@@ -116,6 +127,8 @@ class _MenuRoute<T> extends PopupRoute<T> {
   final BoxDecoration decoration;
   final ScrollPhysics scrollPhysics;
   final double popupHeight;
+  final bool crossTheEdge;
+  final double edgeMargin;
 
   _MenuRoute({
     final this.position,
@@ -126,6 +139,8 @@ class _MenuRoute<T> extends PopupRoute<T> {
     final this.decoration,
     final this.scrollPhysics,
     final this.popupHeight,
+    final this.crossTheEdge,
+    final this.edgeMargin,
   });
 
   @override
@@ -169,6 +184,8 @@ class _MenuRoute<T> extends PopupRoute<T> {
                 route: this,
                 scrollPhysics: scrollPhysics,
                 popupHeight: popupHeight,
+                crossTheEdge: crossTheEdge,
+                edgeMargin: edgeMargin,
               ),
             );
           },
@@ -199,31 +216,58 @@ class _MenuRouteLayout extends SingleChildLayoutDelegate {
       position != oldDelegate.position;
 }
 
-class _Menu<T> extends StatelessWidget {
+class _Menu<T> extends StatefulWidget {
   const _Menu({
     Key key,
     this.route,
     this.scrollPhysics,
     this.popupHeight,
+    this.edgeMargin,
+    this.crossTheEdge,
   }) : super(key: key);
 
   final _MenuRoute<T> route;
   final ScrollPhysics scrollPhysics;
   final double popupHeight;
+  final bool crossTheEdge;
+  final double edgeMargin;
+
+  @override
+  __MenuState<T> createState() => __MenuState<T>();
+}
+
+class __MenuState<T> extends State<_Menu<T>> {
+  final GlobalKey key = GlobalKey();
+  double width;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.crossTheEdge == true) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        final RenderBox renderBox = key.currentContext.findRenderObject();
+        final Offset offset = renderBox.globalToLocal(Offset.zero);
+        final double x = offset.dx.abs();
+        final double screenWidth = MediaQuery.of(context).size.width;
+
+        setState(() => width = screenWidth - x - widget.edgeMargin);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = <Widget>[];
 
-    if (route.topDivider) {
-      children.add(route.divider);
+    if (widget.route.topDivider) {
+      children.add(widget.route.divider);
     }
 
-    for (int i = 0; i < route.items.length; i += 1) {
-      children.add(route.items[i]);
+    for (int i = 0; i < widget.route.items.length; i += 1) {
+      children.add(widget.route.items[i]);
 
-      if (i < route.items.length - 1) {
-        children.add(route.divider);
+      if (i < widget.route.items.length - 1) {
+        children.add(widget.route.divider);
       }
     }
 
@@ -235,38 +279,42 @@ class _Menu<T> extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: AnimatedBuilder(
-        animation: route.animation,
+        animation: widget.route.animation,
         builder: (BuildContext context, Widget child) => Opacity(
-          opacity: opacity.evaluate(route.animation),
+          opacity: opacity.evaluate(widget.route.animation),
           child: Container(
-            height: popupHeight,
+            key: key,
+            width: width,
+            height: widget.popupHeight,
             decoration: BoxDecoration(
-              border: route.decoration.border,
-              borderRadius: route.decoration.borderRadius,
+              border: widget.route.decoration.border,
+              borderRadius: widget.route.decoration.borderRadius,
               boxShadow: [
                 BoxShadow(
                     color: Color.fromARGB(
-                        (20 * shadow.evaluate(route.animation)).toInt(),
+                        (20 * shadow.evaluate(widget.route.animation)).toInt(),
                         0,
                         0,
                         0),
-                    offset: Offset(0.0, 3.0 * shadow.evaluate(route.animation)),
-                    blurRadius: 5.0 * shadow.evaluate(route.animation))
+                    offset: Offset(
+                        0.0, 3.0 * shadow.evaluate(widget.route.animation)),
+                    blurRadius: 5.0 * shadow.evaluate(widget.route.animation))
               ],
             ),
             child: ClipRRect(
-              borderRadius: route.decoration.borderRadius,
+              borderRadius: widget.route.decoration.borderRadius,
               child: IntrinsicWidth(
                 child: SingleChildScrollView(
-                  physics: scrollPhysics ?? NeverScrollableScrollPhysics(),
+                  physics:
+                      widget.scrollPhysics ?? NeverScrollableScrollPhysics(),
                   child: ListBody(children: [
-                    _MenuButtonToggledChild(child: route.toggledChild),
+                    _MenuButtonToggledChild(child: widget.route.toggledChild),
                     Container(
-                      color: route.decoration.color,
+                      color: widget.route.decoration.color,
                       child: Align(
                         alignment: AlignmentDirectional.topStart,
                         widthFactor: 1.0,
-                        heightFactor: height.evaluate(route.animation),
+                        heightFactor: height.evaluate(widget.route.animation),
                         child: SingleChildScrollView(
                           child: ListBody(
                             children: children,

@@ -1,3 +1,6 @@
+import 'package:example/usages/edge-menu-button.dart';
+import 'package:example/usages/normal-menu-button.dart';
+import 'package:example/usages/scroll-menu-button.dart';
 import 'package:flutter/material.dart';
 import 'package:menu_button/menu_button.dart';
 
@@ -26,91 +29,40 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String selectedKey;
-
-  List<String> keys = [
-    'Low',
-    'Medium',
-    'High',
-  ];
-
-  @override
-  void initState() {
-    selectedKey = keys[0];
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final Widget button = SizedBox(
-      width: 93,
-      height: 40,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 11),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Flexible(
-              child: Text(
-                selectedKey,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            SizedBox(
-                width: 12,
-                height: 17,
-                child: FittedBox(
-                    fit: BoxFit.fill,
-                    child: Icon(
-                      Icons.arrow_drop_down,
-                      color: Colors.grey,
-                    ))),
-          ],
-        ),
-      ),
-    );
+    final ThemeData theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            MenuButton(
-              child: button,
-              items: keys,
-              scrollPhysics: AlwaysScrollableScrollPhysics(),
-              topDivider: true,
-              itemBuilder: (value) => Container(
-                  height: 40,
-                  alignment: Alignment.centerLeft,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
-                  child: Text(value)),
-              toggledChild: Container(
-                color: Colors.white,
-                child: button,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: NormalMenuButton(
+                  theme: theme,
+                ),
               ),
-              divider: Container(
-                height: 1,
-                color: Colors.grey,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: ScrollPhysicsMenuButton(
+                  theme: theme,
+                ),
               ),
-              onItemSelected: (value) {
-                setState(() {
-                  selectedKey = value;
-                });
-              },
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]),
-                  borderRadius: const BorderRadius.all(Radius.circular(3.0)),
-                  color: Colors.white),
-              onMenuButtonToggle: (isToggle) {
-                print(isToggle);
-              },
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: EdgeMenuButton(
+                  theme: theme,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
