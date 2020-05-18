@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:menu_button/menu_button.dart';
 
-class ScrollPhysicsMenuButton extends StatefulWidget {
-  const ScrollPhysicsMenuButton({
+class MenuButtonWithoutShowingSameSelectedIitem extends StatefulWidget {
+  const MenuButtonWithoutShowingSameSelectedIitem({
     Key key,
     @required this.theme,
   }) : super(key: key);
@@ -10,12 +10,14 @@ class ScrollPhysicsMenuButton extends StatefulWidget {
   final ThemeData theme;
 
   @override
-  _ScrollPhysicsMenuButtonState createState() =>
-      _ScrollPhysicsMenuButtonState();
+  _MenuButtonWithoutShowingSameSelectedIitemState createState() =>
+      _MenuButtonWithoutShowingSameSelectedIitemState();
 }
 
-class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
+class _MenuButtonWithoutShowingSameSelectedIitemState
+    extends State<MenuButtonWithoutShowingSameSelectedIitem> {
   String selectedKey;
+  String initialValue;
 
   List<String> keys = [
     'Low',
@@ -25,13 +27,14 @@ class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
 
   @override
   void initState() {
+    initialValue = keys[0];
     selectedKey = keys[0];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final Widget scrollChildButton = SizedBox(
+    final Widget childButtonWithoutSameItem = SizedBox(
       width: 93,
       height: 40,
       child: Padding(
@@ -67,18 +70,18 @@ class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
-            'Menu button with scroll physics',
+            'Usage of menu button without showing the same selected item',
             style: widget.theme.textTheme.headline2.copyWith(
               fontSize: 18,
             ),
           ),
         ),
         MenuButton(
-          child: scrollChildButton,
+          child: childButtonWithoutSameItem,
           items: keys,
           topDivider: true,
-          dontShowTheSameItemSelected: false,
-          scrollPhysics: AlwaysScrollableScrollPhysics(),
+          dontShowTheSameItemSelected: true,
+          selectedItem: selectedKey,
           itemBuilder: (value) => Container(
             height: 40,
             alignment: Alignment.centerLeft,
@@ -87,7 +90,7 @@ class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
           ),
           toggledChild: Container(
             color: Colors.white,
-            child: scrollChildButton,
+            child: childButtonWithoutSameItem,
           ),
           divider: Container(
             height: 1,

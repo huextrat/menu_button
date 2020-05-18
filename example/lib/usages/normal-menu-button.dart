@@ -75,6 +75,7 @@ class _NormalMenuButtonState extends State<NormalMenuButton> {
         MenuButton(
           child: normalChildButton,
           items: keys,
+          dontShowTheSameItemSelected: false,
           topDivider: true,
           itemBuilder: (value) => Container(
             height: 40,

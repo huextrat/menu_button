@@ -16,6 +16,8 @@ class MenuButton<T> extends StatefulWidget {
   final double popupHeight;
   final bool crossTheEdge;
   final double edgeMargin;
+  final bool dontShowTheSameItemSelected;
+  final T selectedItem;
 
   const MenuButton({
     @required final this.child,
@@ -31,15 +33,21 @@ class MenuButton<T> extends StatefulWidget {
     final this.popupHeight,
     final this.crossTheEdge = false,
     final this.edgeMargin = 0.0,
+    final this.dontShowTheSameItemSelected = true,
+    final this.selectedItem,
   })  : assert(child != null),
         assert(items != null),
-        assert(itemBuilder != null);
+        assert(itemBuilder != null),
+        assert(!dontShowTheSameItemSelected || selectedItem != null);
 
   @override
   State<StatefulWidget> createState() => _MenuButtonState<T>();
 }
 
 class _MenuButtonState<T> extends State<MenuButton<T>> {
+  T oldItem;
+  T selectedItem;
+
   @override
   Widget build(BuildContext context) => InkWell(
         child: Container(decoration: widget.decoration, child: widget.child),
@@ -48,6 +56,11 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
 
   void togglePopup() {
     widget.onMenuButtonToggle(true);
+    if (widget.dontShowTheSameItemSelected) {
+      setState(() => selectedItem = widget.selectedItem);
+      MenuButtonUtils.dontShowTheSameItemSelected(
+          oldItem, selectedItem, widget.items);
+    }
 
     final List<Widget> items = widget.items
         .map((value) => _MenuItem(
@@ -81,6 +94,11 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         crossTheEdge: widget.crossTheEdge,
       ).then<void>((T newValue) {
         widget.onMenuButtonToggle(false);
+
+        if (widget.dontShowTheSameItemSelected) {
+          setState(() => oldItem = selectedItem);
+          setState(() => selectedItem = newValue);
+        }
         if (mounted && newValue != null && widget.onItemSelected != null) {
           widget.onItemSelected(newValue);
         }
@@ -357,6 +375,40 @@ class _MenuItem<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () => Navigator.of(context).pop<T>(value), child: child);
+  }
+}
+
+class MenuButtonUtils {
+  static Map<String, dynamic> dontShowTheSameItemSelected(
+      dynamic oldSelected, dynamic selectedItem, List items) {
+    if (oldSelected != selectedItem) {
+      final res = {
+        'oldSelected': oldSelected,
+        'selectedItem': selectedItem,
+        'items': items,
+      };
+
+      if (oldSelected == null) {
+        items.removeWhere((element) => element == selectedItem);
+        return res;
+      }
+
+      bool isOldSelectedAlready = false;
+      items.forEach((element) {
+        if (element == oldSelected) {
+          isOldSelectedAlready = true;
+        }
+      });
+
+      items.removeWhere((element) => element == selectedItem);
+      if (!isOldSelectedAlready) {
+        items.add(oldSelected);
+      }
+
+      return res;
+    }
+
+    return {};
   }
 }
 

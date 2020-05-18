@@ -1,8 +1,8 @@
 import 'package:example/usages/edge-menu-button.dart';
+import 'package:example/usages/menu-button-without-showing-same-selected-item.dart';
 import 'package:example/usages/normal-menu-button.dart';
 import 'package:example/usages/scroll-menu-button.dart';
 import 'package:flutter/material.dart';
-import 'package:menu_button/menu_button.dart';
 
 void main() => runApp(MyApp());
 
@@ -58,6 +58,12 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: EdgeMenuButton(
+                  theme: theme,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: MenuButtonWithoutShowingSameSelectedIitem(
                   theme: theme,
                 ),
               ),
