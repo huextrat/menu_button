@@ -1,3 +1,7 @@
+## 1.1.0 - 2020-05-08
+Add menu button without showing the current item
+Add a label property if needed
+
 ## 1.0.0 - 2020-05-08
 Add crossEdge & edgeMargin configuration
 Update example
