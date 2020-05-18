@@ -77,6 +77,7 @@ class _EdgeMenuButtonState extends State<EdgeMenuButton> {
           items: keys,
           topDivider: true,
           crossTheEdge: true,
+          dontShowTheSameItemSelected: false,
           // Use edge margin when you want the menu button don't touch in the edges
           edgeMargin: 12,
           itemBuilder: (value) => Container(
