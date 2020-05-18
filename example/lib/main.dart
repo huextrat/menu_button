@@ -1,4 +1,5 @@
 import 'package:example/usages/edge-menu-button.dart';
+import 'package:example/usages/label-menu-button.dart';
 import 'package:example/usages/menu-button-without-showing-same-selected-item.dart';
 import 'package:example/usages/normal-menu-button.dart';
 import 'package:example/usages/scroll-menu-button.dart';
@@ -64,6 +65,12 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: MenuButtonWithoutShowingSameSelectedIitem(
+                  theme: theme,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: MenuButtonLabel(
                   theme: theme,
                 ),
               ),
