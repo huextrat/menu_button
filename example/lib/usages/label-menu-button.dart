@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:menu_button/menu_button.dart';
 
-class MenuButtonWithoutShowingSameSelectedIitem extends StatefulWidget {
-  const MenuButtonWithoutShowingSameSelectedIitem({
+class MenuButtonLabel extends StatefulWidget {
+  const MenuButtonLabel({
     Key key,
     @required this.theme,
   }) : super(key: key);
@@ -10,12 +10,12 @@ class MenuButtonWithoutShowingSameSelectedIitem extends StatefulWidget {
   final ThemeData theme;
 
   @override
-  _MenuButtonWithoutShowingSameSelectedIitemState createState() =>
-      _MenuButtonWithoutShowingSameSelectedIitemState();
+  _MenuButtonLabelState createState() =>
+      _MenuButtonLabelState();
 }
 
-class _MenuButtonWithoutShowingSameSelectedIitemState
-    extends State<MenuButtonWithoutShowingSameSelectedIitem> {
+class _MenuButtonLabelState
+    extends State<MenuButtonLabel> {
   String selectedKey;
   String initialValue;
 
@@ -68,7 +68,7 @@ class _MenuButtonWithoutShowingSameSelectedIitemState
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
-            'Usage of menu button without showing the same selected item',
+            'Menu button usage with label',
             style: widget.theme.textTheme.headline2.copyWith(
               fontSize: 18,
             ),
@@ -80,6 +80,16 @@ class _MenuButtonWithoutShowingSameSelectedIitemState
           topDivider: true,
           dontShowTheSameItemSelected: true,
           selectedItem: selectedKey,
+          label: Text(
+            'Label',
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          ),
+          labelDecoration: LabelDecoration(
+            verticalMenuPadding: 12,
+            // background: Colors.red
+          ),
           itemBuilder: (value) => Container(
             height: 40,
             alignment: Alignment.centerLeft,

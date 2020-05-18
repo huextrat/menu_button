@@ -18,6 +18,8 @@ class MenuButton<T> extends StatefulWidget {
   final double edgeMargin;
   final bool dontShowTheSameItemSelected;
   final T selectedItem;
+  final Text label;
+  final LabelDecoration labelDecoration;
 
   const MenuButton({
     @required final this.child,
@@ -35,9 +37,12 @@ class MenuButton<T> extends StatefulWidget {
     final this.edgeMargin = 0.0,
     final this.dontShowTheSameItemSelected = true,
     final this.selectedItem,
+    final this.label,
+    final this.labelDecoration,
   })  : assert(child != null),
         assert(items != null),
         assert(itemBuilder != null),
+        assert(!dontShowTheSameItemSelected || selectedItem != null),
         assert(!dontShowTheSameItemSelected || selectedItem != null);
 
   @override
@@ -48,14 +53,132 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
   T oldItem;
   T selectedItem;
 
-  @override
-  Widget build(BuildContext context) => InkWell(
-        child: Container(decoration: widget.decoration, child: widget.child),
-        onTap: togglePopup,
+  LabelDecoration labelDecoration;
+  Size labelTextSize;
+  bool toggledMenu = false;
+  Widget button;
+
+  void _updateLabelTextSize() {
+    if (widget.label != null) {
+      setState(
+        () => labelTextSize = MenuButtonUtils.getTextSize(
+          widget.label.data,
+          widget.label.style,
+        ),
       );
+    }
+  }
+
+  void _updateButton() {
+    setState(
+      () => button = InkWell(
+        child: Container(
+          decoration: widget.decoration,
+          child: widget.child,
+        ),
+        onTap: togglePopup,
+      ),
+    );
+  }
+
+  void _updateLabelDecoration() {
+    setState(
+      () {
+        if (widget.labelDecoration == null) {
+          labelDecoration = LabelDecoration(
+            verticalMenuPadding: 12,
+          );
+        } else {
+          labelDecoration = widget.labelDecoration;
+        }
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(
+      () => button = InkWell(
+        child: Container(
+          decoration: widget.decoration,
+          child: widget.child,
+        ),
+        onTap: togglePopup,
+      ),
+    );
+    _updateLabelDecoration();
+    _updateLabelTextSize();
+  }
+
+  @override
+  void didUpdateWidget(MenuButton<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _updateLabelTextSize();
+    _updateLabelDecoration();
+    _updateButton();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.label == null
+        ? button
+        : Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: labelDecoration.verticalMenuPadding,
+                ),
+                child: button,
+              ),
+              Positioned(
+                top: labelDecoration.verticalMenuPadding,
+                left: labelDecoration.leftPosition,
+                child: Container(
+                  width: labelTextSize.width + labelDecoration.leftPosition,
+                  height: widget.decoration.border.top.width,
+                  color: Theme.of(context).backgroundColor,
+                ),
+              ),
+              Positioned(
+                top: labelDecoration.verticalMenuPadding / 2,
+                left: labelDecoration.leftPosition,
+                child: Container(
+                  // color: widget.decoration.color,
+                  color: labelDecoration.background ??
+                      Theme.of(context).backgroundColor,
+                  width: labelTextSize.width + labelDecoration.leftPosition,
+                  height: labelTextSize.height / 2,
+                ),
+              ),
+              Positioned(
+                top: labelDecoration.verticalMenuPadding,
+                left: labelDecoration.leftPosition,
+                child: Container(
+                  color: labelDecoration.background ?? widget.decoration.color,
+                  width: labelTextSize.width + labelDecoration.leftPosition,
+                  height: labelTextSize.height / 2,
+                ),
+              ),
+              Positioned(
+                top: (0 - labelTextSize.height / 2) +
+                    labelDecoration.verticalMenuPadding,
+                left: labelDecoration.leftPosition +
+                    labelDecoration.leftPosition / 2,
+                child: AnimatedOpacity(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  opacity: toggledMenu ? 0 : 1,
+                  child: widget.label,
+                ),
+              ),
+            ],
+          );
+  }
 
   void togglePopup() {
-    widget.onMenuButtonToggle(true);
+    setState(() => toggledMenu = !toggledMenu);
+    widget.onMenuButtonToggle(toggledMenu);
     if (widget.dontShowTheSameItemSelected) {
       setState(() => selectedItem = widget.selectedItem);
       MenuButtonUtils.dontShowTheSameItemSelected(
@@ -72,7 +195,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
-        button.localToGlobal(const Offset(0, 0), ancestor: overlay),
+        button.localToGlobal(const Offset(0, 12), ancestor: overlay),
         button.localToGlobal(button.size.bottomRight(Offset.zero),
             ancestor: overlay),
       ),
@@ -93,7 +216,8 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         edgeMargin: widget.edgeMargin,
         crossTheEdge: widget.crossTheEdge,
       ).then<void>((T newValue) {
-        widget.onMenuButtonToggle(false);
+        setState(() => toggledMenu = !toggledMenu);
+        widget.onMenuButtonToggle(toggledMenu);
 
         if (widget.dontShowTheSameItemSelected) {
           setState(() => oldItem = selectedItem);
@@ -378,7 +502,28 @@ class _MenuItem<T> extends StatelessWidget {
   }
 }
 
+class LabelDecoration {
+  double verticalMenuPadding;
+  double leftPosition;
+  Color background;
+
+  LabelDecoration({
+    @required this.verticalMenuPadding,
+    this.leftPosition = 6,
+    this.background = Colors.white,
+  });
+}
+
 class MenuButtonUtils {
+  static Size getTextSize(String text, TextStyle style) {
+    final TextPainter textPainter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        maxLines: 1,
+        textDirection: TextDirection.ltr)
+      ..layout(minWidth: 0, maxWidth: double.infinity);
+    return textPainter.size;
+  }
+
   static Map<String, dynamic> dontShowTheSameItemSelected(
       dynamic oldSelected, dynamic selectedItem, List items) {
     if (oldSelected != selectedItem) {
