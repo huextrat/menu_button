@@ -195,7 +195,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
-        button.localToGlobal(Offset(0, widget.labelDecoration != null ? 12 : 0), ancestor: overlay),
+        button.localToGlobal(Offset(0, widget.labelDecoration != null ? widget.labelDecoration.verticalMenuPadding : 0), ancestor: overlay),
         button.localToGlobal(button.size.bottomRight(Offset.zero),
             ancestor: overlay),
       ),
