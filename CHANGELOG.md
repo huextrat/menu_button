@@ -1,4 +1,7 @@
-## 1.1.0 - 2020-05-08
+## 1.1.1 - 2020-05-19
+Adjust offset depending on verticalMenuPadding
+
+## 1.1.0 - 2020-05-18
 Add menu button without showing the current item
 Add a label property if needed
 
