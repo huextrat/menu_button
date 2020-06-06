@@ -429,6 +429,7 @@ class __MenuState<T> extends State<_Menu<T>> {
             width: width,
             height: widget.popupHeight,
             decoration: BoxDecoration(
+              color: widget.route.decoration.color,
               border: widget.route.decoration.border,
               borderRadius: widget.route.decoration.borderRadius,
               boxShadow: [
@@ -451,16 +452,13 @@ class __MenuState<T> extends State<_Menu<T>> {
                       widget.scrollPhysics ?? NeverScrollableScrollPhysics(),
                   child: ListBody(children: [
                     _MenuButtonToggledChild(child: widget.route.toggledChild),
-                    Container(
-                      color: widget.route.decoration.color,
-                      child: Align(
-                        alignment: AlignmentDirectional.topStart,
-                        widthFactor: 1.0,
-                        heightFactor: height.evaluate(widget.route.animation),
-                        child: SingleChildScrollView(
-                          child: ListBody(
-                            children: children,
-                          ),
+                    Align(
+                      alignment: AlignmentDirectional.topStart,
+                      widthFactor: 1.0,
+                      heightFactor: height.evaluate(widget.route.animation),
+                      child: SingleChildScrollView(
+                        child: ListBody(
+                          children: children,
                         ),
                       ),
                     ),
