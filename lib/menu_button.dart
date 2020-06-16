@@ -35,14 +35,13 @@ class MenuButton<T> extends StatefulWidget {
     final this.popupHeight,
     final this.crossTheEdge = false,
     final this.edgeMargin = 0.0,
-    final this.dontShowTheSameItemSelected = true,
+    final this.dontShowTheSameItemSelected = false,
     final this.selectedItem,
     final this.label,
     final this.labelDecoration,
   })  : assert(child != null),
         assert(items != null),
         assert(itemBuilder != null),
-        assert(!dontShowTheSameItemSelected || selectedItem != null),
         assert(!dontShowTheSameItemSelected || selectedItem != null);
 
   @override
