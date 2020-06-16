@@ -1,3 +1,7 @@
+## 1.2.0+1 - 2020-06-16
+
+MenuButton now display the decoration color everywhere
+
 ## 1.2.0 - 2020-06-16
 
 Breaking change
