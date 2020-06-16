@@ -1,3 +1,7 @@
+## 1.2.1 - 2020-06-16
+
+Fix width when MenuButton is on Expanded widget
+
 ## 1.2.0+1 - 2020-06-16
 
 MenuButton now display the decoration color everywhere

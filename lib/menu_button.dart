@@ -56,6 +56,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
   Size labelTextSize;
   bool toggledMenu = false;
   Widget button;
+  double buttonWidth;
 
   void _updateLabelTextSize() {
     if (widget.label != null) {
@@ -192,6 +193,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         .toList();
     final RenderBox button = context.findRenderObject();
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+    buttonWidth = button.size.width;
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
         button.localToGlobal(
@@ -261,6 +263,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
           popupHeight: popupHeight,
           crossTheEdge: crossTheEdge,
           edgeMargin: edgeMargin,
+          buttonWidth: buttonWidth
         ),
       );
 }
@@ -276,6 +279,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
   final double popupHeight;
   final bool crossTheEdge;
   final double edgeMargin;
+  final double buttonWidth;
 
   _MenuRoute({
     final this.position,
@@ -288,6 +292,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
     final this.popupHeight,
     final this.crossTheEdge,
     final this.edgeMargin,
+    final this.buttonWidth,
   });
 
   @override
@@ -333,6 +338,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
                 popupHeight: popupHeight,
                 crossTheEdge: crossTheEdge,
                 edgeMargin: edgeMargin,
+                buttonWidth: buttonWidth,
               ),
             );
           },
@@ -371,6 +377,7 @@ class _Menu<T> extends StatefulWidget {
     this.popupHeight,
     this.edgeMargin,
     this.crossTheEdge,
+    @required this.buttonWidth,
   }) : super(key: key);
 
   final _MenuRoute<T> route;
@@ -378,6 +385,7 @@ class _Menu<T> extends StatefulWidget {
   final double popupHeight;
   final bool crossTheEdge;
   final double edgeMargin;
+  final double buttonWidth;
 
   @override
   __MenuState<T> createState() => __MenuState<T>();
@@ -431,7 +439,7 @@ class __MenuState<T> extends State<_Menu<T>> {
           opacity: opacity.evaluate(widget.route.animation),
           child: Container(
             key: key,
-            width: width,
+            width: width ?? widget.buttonWidth,
             height: widget.popupHeight,
             decoration: BoxDecoration(
               color: widget.route.decoration.color,
@@ -454,7 +462,7 @@ class __MenuState<T> extends State<_Menu<T>> {
               child: IntrinsicWidth(
                 child: SingleChildScrollView(
                   physics:
-                      widget.scrollPhysics ?? NeverScrollableScrollPhysics(),
+                  widget.scrollPhysics ?? NeverScrollableScrollPhysics(),
                   child: ListBody(children: [
                     _MenuButtonToggledChild(child: widget.route.toggledChild),
                     Align(
