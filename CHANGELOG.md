@@ -1,3 +1,9 @@
+## 1.2.0 - 2020-06-16
+
+Breaking change
+- Default value of `dontShowTheSameItemSelected` is now `false`
+If you are using it in previous version with its default value please do not forget to add the property to `true`
+
 ## 1.1.1 - 2020-05-19
 Adjust offset depending on verticalMenuPadding
 
