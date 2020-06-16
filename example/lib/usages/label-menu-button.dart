@@ -10,12 +10,10 @@ class MenuButtonLabel extends StatefulWidget {
   final ThemeData theme;
 
   @override
-  _MenuButtonLabelState createState() =>
-      _MenuButtonLabelState();
+  _MenuButtonLabelState createState() => _MenuButtonLabelState();
 }
 
-class _MenuButtonLabelState
-    extends State<MenuButtonLabel> {
+class _MenuButtonLabelState extends State<MenuButtonLabel> {
   String selectedKey;
   String initialValue;
 
