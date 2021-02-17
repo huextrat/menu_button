@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:menu_button/menu_button.dart';
 
-class NormalMenuButton extends StatefulWidget {
-  const NormalMenuButton({
+class EdgeMenuButton extends StatefulWidget {
+  const EdgeMenuButton({
     Key key,
     @required this.theme,
   }) : super(key: key);
@@ -10,16 +10,16 @@ class NormalMenuButton extends StatefulWidget {
   final ThemeData theme;
 
   @override
-  _NormalMenuButtonState createState() => _NormalMenuButtonState();
+  _EdgeMenuButtonState createState() => _EdgeMenuButtonState();
 }
 
-class _NormalMenuButtonState extends State<NormalMenuButton> {
+class _EdgeMenuButtonState extends State<EdgeMenuButton> {
   String selectedKey;
 
-  List<String> keys = [
-    'Low',
-    'Medium',
-    'High',
+  List<String> keys = <String>[
+    'Lorem ipsum',
+    'Lorem ipsum dolor sit amet',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   ];
 
   @override
@@ -44,7 +44,7 @@ class _NormalMenuButtonState extends State<NormalMenuButton> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 12,
               height: 17,
               child: FittedBox(
@@ -61,37 +61,41 @@ class _NormalMenuButtonState extends State<NormalMenuButton> {
     );
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
-            'Normal usage of menu button',
+            'Menu button not crossing the edge',
             style: widget.theme.textTheme.headline2.copyWith(
               fontSize: 18,
             ),
           ),
         ),
-        MenuButton(
+        MenuButton<String>(
           child: normalChildButton,
           items: keys,
-          dontShowTheSameItemSelected: false,
           topDivider: true,
-          itemBuilder: (value) => Container(
+          crossTheEdge: true,
+          // Use edge margin when you want the menu button don't touch in the edges
+          edgeMargin: 12,
+          itemBuilder: (String value) => Container(
             height: 40,
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
-            child: Text(value),
+            child: Text(
+              value,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           toggledChild: Container(
-            color: Colors.white,
             child: normalChildButton,
           ),
           divider: Container(
             height: 1,
             color: Colors.grey,
           ),
-          onItemSelected: (value) {
+          onItemSelected: (String value) {
             setState(() {
               selectedKey = value;
             });
@@ -100,9 +104,8 @@ class _NormalMenuButtonState extends State<NormalMenuButton> {
               border: Border.all(color: Colors.grey[300]),
               borderRadius: const BorderRadius.all(
                 Radius.circular(3.0),
-              ),
-              color: Colors.white),
-          onMenuButtonToggle: (isToggle) {
+              )),
+          onMenuButtonToggle: (bool isToggle) {
             print(isToggle);
           },
         ),

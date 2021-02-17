@@ -2,50 +2,73 @@ library menu_button;
 
 import 'package:flutter/material.dart';
 
+/// Custom MenuButton to display a menu button following Material Design example
 class MenuButton<T> extends StatefulWidget {
-  const MenuButton({
-    @required final this.child,
-    @required final this.items,
-    @required final this.itemBuilder,
-    final this.toggledChild,
-    final this.divider,
-    final this.topDivider = true,
-    final this.onItemSelected,
-    final this.decoration,
-    final this.onMenuButtonToggle,
-    final this.scrollPhysics,
-    final this.popupHeight,
-    final this.crossTheEdge = false,
-    final this.edgeMargin = 0.0,
-    final this.dontShowTheSameItemSelected = false,
-    final this.selectedItem,
-    final this.label,
-    final this.labelDecoration,
-    final this.itemBackgroundColor = Colors.white,
-    final this.menuButtonBackgroundColor = Colors.white
-  })  : assert(child != null),
+  const MenuButton(
+      {@required final this.child,
+      @required final this.items,
+      @required final this.itemBuilder,
+      final this.toggledChild,
+      final this.divider,
+      final this.topDivider = true,
+      final this.onItemSelected,
+      final this.decoration,
+      final this.onMenuButtonToggle,
+      final this.scrollPhysics,
+      final this.popupHeight,
+      final this.crossTheEdge = false,
+      final this.edgeMargin = 0.0,
+      final this.showSelectedItemOnList = true,
+      final this.selectedItem,
+      final this.label,
+      final this.labelDecoration,
+      final this.itemBackgroundColor = Colors.white,
+      final this.menuButtonBackgroundColor = Colors.white})
+      : assert(child != null),
         assert(items != null),
         assert(itemBuilder != null),
-        assert(!dontShowTheSameItemSelected || selectedItem != null);
+        assert(showSelectedItemOnList || selectedItem != null);
 
   final Widget child;
   final Widget toggledChild;
   final MenuItemBuilder<T> itemBuilder;
+
+  /// Divider widget
   final Widget divider;
+
+  /// Top Divider visibility [default = true]
   final bool topDivider;
+
+  /// List of all items available on the menu
   final List<T> items;
+
+  /// Action to do when an item is selected
   final MenuItemSelected<T> onItemSelected;
   final BoxDecoration decoration;
   final MenuButtonToggleCallback onMenuButtonToggle;
+
+  /// Determines the scroll physics
   final ScrollPhysics scrollPhysics;
+
+  /// Force a define height for the popup view
   final double popupHeight;
   final bool crossTheEdge;
   final double edgeMargin;
-  final bool dontShowTheSameItemSelected;
+
+  /// Display or not the selected item on the list [default = false]
+  final bool showSelectedItemOnList;
+
+  /// Define the selected item
   final T selectedItem;
+
+  /// Add a label on top of the menu button as Material design
   final Text label;
   final LabelDecoration labelDecoration;
+
+  /// Background color of items [default = Colors.white]
   final Color itemBackgroundColor;
+
+  /// Background color of menu button [default = Colors.white]
   final Color menuButtonBackgroundColor;
 
   @override
@@ -158,7 +181,6 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
                 top: labelDecoration.verticalMenuPadding / 2,
                 left: labelDecoration.leftPosition,
                 child: Container(
-                  // color: widget.decoration.color,
                   color: labelDecoration.background ??
                       Theme.of(context).backgroundColor,
                   width: labelTextSize.width + labelDecoration.leftPosition,
@@ -193,9 +215,9 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
   void togglePopup() {
     setState(() => toggledMenu = !toggledMenu);
     widget.onMenuButtonToggle(toggledMenu);
-    if (widget.dontShowTheSameItemSelected) {
+    if (widget.showSelectedItemOnList) {
       setState(() => selectedItem = widget.selectedItem);
-      MenuButtonUtils.dontShowTheSameItemSelected(
+      MenuButtonUtils.showSelectedItemOnList(
           oldItem, selectedItem, widget.items);
     }
 
@@ -243,7 +265,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         setState(() => toggledMenu = !toggledMenu);
         widget.onMenuButtonToggle(toggledMenu);
 
-        if (widget.dontShowTheSameItemSelected) {
+        if (widget.showSelectedItemOnList) {
           setState(() => oldItem = selectedItem);
           setState(() => selectedItem = newValue);
         }
@@ -287,20 +309,19 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
 }
 
 class _MenuRoute<T> extends PopupRoute<T> {
-  _MenuRoute({
-    final this.position,
-    final this.items,
-    final this.toggledChild,
-    final this.divider,
-    final this.topDivider,
-    final this.decoration,
-    final this.scrollPhysics,
-    final this.popupHeight,
-    final this.crossTheEdge,
-    final this.edgeMargin,
-    final this.buttonWidth,
-    final this.itemBackgroundColor
-  });
+  _MenuRoute(
+      {final this.position,
+      final this.items,
+      final this.toggledChild,
+      final this.divider,
+      final this.topDivider,
+      final this.decoration,
+      final this.scrollPhysics,
+      final this.popupHeight,
+      final this.crossTheEdge,
+      final this.edgeMargin,
+      final this.buttonWidth,
+      final this.itemBackgroundColor});
 
   final RelativeRect position;
   final List<Widget> items;
@@ -367,17 +388,15 @@ class _MenuRoute<T> extends PopupRoute<T> {
       );
 }
 
-// Positioning of the menu on the screen.
+/// Positioning of the menu on the screen.
 class _MenuRouteLayout extends SingleChildLayoutDelegate {
   _MenuRouteLayout(this.position);
 
-  // Rectangle of underlying button, relative to the overlay's dimensions.
+  /// Rectangle of underlying button, relative to the overlay's dimensions.
   final RelativeRect position;
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    // The menu can be at most the size of the overlay minus 8.0 pixels in each
-    // direction.
     return BoxConstraints.loose(constraints.biggest);
   }
 
@@ -489,7 +508,10 @@ class __MenuState<T> extends State<_Menu<T>> {
                   physics: widget.scrollPhysics ??
                       const NeverScrollableScrollPhysics(),
                   child: ListBody(children: <Widget>[
-                    _MenuButtonToggledChild(child: widget.route.toggledChild, itemBackgroundColor: widget.itemBackgroundColor,),
+                    _MenuButtonToggledChild(
+                      child: widget.route.toggledChild,
+                      itemBackgroundColor: widget.itemBackgroundColor,
+                    ),
                     Align(
                       alignment: AlignmentDirectional.topStart,
                       widthFactor: 1.0,
@@ -512,7 +534,8 @@ class __MenuState<T> extends State<_Menu<T>> {
 }
 
 class _MenuButtonToggledChild extends StatelessWidget {
-  const _MenuButtonToggledChild({@required final this.child, this.itemBackgroundColor});
+  const _MenuButtonToggledChild(
+      {@required final this.child, this.itemBackgroundColor});
 
   final Widget child;
   final Color itemBackgroundColor;
@@ -530,7 +553,8 @@ class _MenuButtonToggledChild extends StatelessWidget {
 }
 
 class _MenuItem<T> extends StatelessWidget {
-  const _MenuItem({this.value, @required final this.child, this.itemBackgroundColor});
+  const _MenuItem(
+      {this.value, @required final this.child, this.itemBackgroundColor});
 
   final T value;
   final Widget child;
@@ -568,7 +592,7 @@ class MenuButtonUtils {
     return textPainter.size;
   }
 
-  static Map<String, dynamic> dontShowTheSameItemSelected(
+  static Map<String, dynamic> showSelectedItemOnList(
       dynamic oldSelected, dynamic selectedItem, List<Object> items) {
     if (oldSelected != selectedItem) {
       final Map<String, Object> res = <String, Object>{
