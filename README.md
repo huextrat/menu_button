@@ -6,7 +6,7 @@ A popup menu button widget with handsome design and easy to use.
 
 ## Installations
 
-Add `menu_button: ^1.2.1` in your `pubspec.yaml` dependencies. And import it:
+Add `menu_button: ^1.3.0` in your `pubspec.yaml` dependencies. And import it:
 
 ```dart
 import 'package:menu_button/menu_button.dart';
@@ -29,10 +29,9 @@ MenuButton(
     alignment: Alignment.centerLeft,
     padding: const EdgeInsets.symmetric(horizontal: 16),
     child: Text(value)
-  ),// Widget displayed for each item
+  ), // Widget displayed for each item
   toggledChild: Container(
-    color: Colors.white,
-    child: button,// Widget displayed as the button,
+    child: button, // Widget displayed as the button,
   ),
   divider: Container(
     height: 1,
@@ -40,13 +39,13 @@ MenuButton(
   ),
   onItemSelected: (value) {
     selectedItem = value;
-    // Action when new item is selected
   },
   decoration: BoxDecoration(
     border: Border.all(color: Colors.grey[300]),
-    borderRadius: const BorderRadius.all(Radius.circular(3.0)),
-    color: Colors.white
+    borderRadius: const BorderRadius.all(Radius.circular(3.0))
   ),
+  itemBackgroundColor: Colors.blue,
+  menuButtonBackgroundColor: Colors.green,
   onMenuButtonToggle: (isToggle) {
     print(isToggle);
   },

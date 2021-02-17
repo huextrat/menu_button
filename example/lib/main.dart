@@ -1,8 +1,8 @@
-import 'package:example/usages/edge-menu-button.dart';
-import 'package:example/usages/label-menu-button.dart';
-import 'package:example/usages/menu-button-without-showing-same-selected-item.dart';
-import 'package:example/usages/normal-menu-button.dart';
-import 'package:example/usages/scroll-menu-button.dart';
+import 'package:example/usages/edge_menu_button.dart';
+import 'package:example/usages/label_menu_button.dart';
+import 'package:example/usages/menu_button_without_current.dart';
+import 'package:example/usages/normal_menu_button.dart';
+import 'package:example/usages/scroll_menu_button.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -15,13 +15,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Menu Button Example'),
+      home: const MyHomePage(title: 'Menu Button Example'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  const MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 

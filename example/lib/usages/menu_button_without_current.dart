@@ -19,7 +19,7 @@ class _MenuButtonWithoutShowingSameSelectedIitemState
   String selectedKey;
   String initialValue;
 
-  List<String> keys = [
+  List<String> keys = <String>[
     'Low',
     'Medium',
     'High',
@@ -47,7 +47,7 @@ class _MenuButtonWithoutShowingSameSelectedIitemState
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 12,
             height: 17,
             child: FittedBox(
@@ -64,7 +64,7 @@ class _MenuButtonWithoutShowingSameSelectedIitemState
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
@@ -74,27 +74,26 @@ class _MenuButtonWithoutShowingSameSelectedIitemState
             ),
           ),
         ),
-        MenuButton(
+        MenuButton<String>(
           child: childButtonWithoutSameItem,
           items: keys,
           topDivider: true,
-          dontShowTheSameItemSelected: true,
+          showSelectedItemOnList: false,
           selectedItem: selectedKey,
-          itemBuilder: (value) => Container(
+          itemBuilder: (String value) => Container(
             height: 40,
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
             child: Text(value),
           ),
           toggledChild: Container(
-            color: Colors.white,
             child: childButtonWithoutSameItem,
           ),
           divider: Container(
             height: 1,
             color: Colors.grey,
           ),
-          onItemSelected: (value) {
+          onItemSelected: (String value) {
             setState(() {
               selectedKey = value;
             });
@@ -104,9 +103,8 @@ class _MenuButtonWithoutShowingSameSelectedIitemState
             borderRadius: const BorderRadius.all(
               Radius.circular(3.0),
             ),
-            color: Colors.white,
           ),
-          onMenuButtonToggle: (isToggle) {
+          onMenuButtonToggle: (bool isToggle) {
             print(isToggle);
           },
         ),

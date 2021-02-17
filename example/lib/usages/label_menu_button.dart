@@ -17,7 +17,7 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
   String selectedKey;
   String initialValue;
 
-  List<String> keys = [
+  List<String> keys = <String>[
     'Low',
     'Medium',
     'High',
@@ -45,7 +45,7 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 12,
             height: 17,
             child: FittedBox(
@@ -62,7 +62,7 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
@@ -72,13 +72,12 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
             ),
           ),
         ),
-        MenuButton(
+        MenuButton<String>(
           child: childButtonWithoutSameItem,
           items: keys,
           topDivider: true,
-          dontShowTheSameItemSelected: true,
           selectedItem: selectedKey,
-          label: Text(
+          label: const Text(
             'Label',
             style: TextStyle(
               fontSize: 12,
@@ -88,21 +87,20 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
             verticalMenuPadding: 12,
             // background: Colors.red
           ),
-          itemBuilder: (value) => Container(
+          itemBuilder: (String value) => Container(
             height: 40,
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
             child: Text(value),
           ),
           toggledChild: Container(
-            color: Colors.white,
             child: childButtonWithoutSameItem,
           ),
           divider: Container(
             height: 1,
             color: Colors.grey,
           ),
-          onItemSelected: (value) {
+          onItemSelected: (String value) {
             setState(() {
               selectedKey = value;
             });
@@ -112,9 +110,10 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
             borderRadius: const BorderRadius.all(
               Radius.circular(3.0),
             ),
-            color: Colors.white,
           ),
-          onMenuButtonToggle: (isToggle) {
+          itemBackgroundColor: Colors.blue,
+          menuButtonBackgroundColor: Colors.green,
+          onMenuButtonToggle: (bool isToggle) {
             print(isToggle);
           },
         ),

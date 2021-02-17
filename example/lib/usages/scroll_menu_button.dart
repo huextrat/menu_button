@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:menu_button/menu_button.dart';
 
-class EdgeMenuButton extends StatefulWidget {
-  const EdgeMenuButton({
+class ScrollPhysicsMenuButton extends StatefulWidget {
+  const ScrollPhysicsMenuButton({
     Key key,
     @required this.theme,
   }) : super(key: key);
@@ -10,16 +10,17 @@ class EdgeMenuButton extends StatefulWidget {
   final ThemeData theme;
 
   @override
-  _EdgeMenuButtonState createState() => _EdgeMenuButtonState();
+  _ScrollPhysicsMenuButtonState createState() =>
+      _ScrollPhysicsMenuButtonState();
 }
 
-class _EdgeMenuButtonState extends State<EdgeMenuButton> {
+class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
   String selectedKey;
 
-  List<String> keys = [
-    'Lorem ipsum',
-    'Lorem ipsum dolor sit amet',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  List<String> keys = <String>[
+    'Low',
+    'Medium',
+    'High',
   ];
 
   @override
@@ -30,7 +31,7 @@ class _EdgeMenuButtonState extends State<EdgeMenuButton> {
 
   @override
   Widget build(BuildContext context) {
-    final Widget normalChildButton = SizedBox(
+    final Widget scrollChildButton = SizedBox(
       width: 93,
       height: 40,
       child: Padding(
@@ -44,7 +45,7 @@ class _EdgeMenuButtonState extends State<EdgeMenuButton> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 12,
               height: 17,
               child: FittedBox(
@@ -61,43 +62,36 @@ class _EdgeMenuButtonState extends State<EdgeMenuButton> {
     );
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
-            'Menu button not crossing the edge',
+            'Menu button with scroll physics',
             style: widget.theme.textTheme.headline2.copyWith(
               fontSize: 18,
             ),
           ),
         ),
-        MenuButton(
-          child: normalChildButton,
+        MenuButton<String>(
+          child: scrollChildButton,
           items: keys,
           topDivider: true,
-          crossTheEdge: true,
-          dontShowTheSameItemSelected: false,
-          // Use edge margin when you want the menu button don't touch in the edges
-          edgeMargin: 12,
-          itemBuilder: (value) => Container(
+          scrollPhysics: const AlwaysScrollableScrollPhysics(),
+          itemBuilder: (String value) => Container(
             height: 40,
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
-            child: Text(
-              value,
-              overflow: TextOverflow.ellipsis,
-            ),
+            child: Text(value),
           ),
           toggledChild: Container(
-            color: Colors.white,
-            child: normalChildButton,
+            child: scrollChildButton,
           ),
           divider: Container(
             height: 1,
             color: Colors.grey,
           ),
-          onItemSelected: (value) {
+          onItemSelected: (String value) {
             setState(() {
               selectedKey = value;
             });
@@ -106,9 +100,8 @@ class _EdgeMenuButtonState extends State<EdgeMenuButton> {
               border: Border.all(color: Colors.grey[300]),
               borderRadius: const BorderRadius.all(
                 Radius.circular(3.0),
-              ),
-              color: Colors.white),
-          onMenuButtonToggle: (isToggle) {
+              )),
+          onMenuButtonToggle: (bool isToggle) {
             print(isToggle);
           },
         ),

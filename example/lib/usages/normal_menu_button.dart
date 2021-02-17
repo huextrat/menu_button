@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:menu_button/menu_button.dart';
 
-class ScrollPhysicsMenuButton extends StatefulWidget {
-  const ScrollPhysicsMenuButton({
+class NormalMenuButton extends StatefulWidget {
+  const NormalMenuButton({
     Key key,
     @required this.theme,
   }) : super(key: key);
@@ -10,14 +10,13 @@ class ScrollPhysicsMenuButton extends StatefulWidget {
   final ThemeData theme;
 
   @override
-  _ScrollPhysicsMenuButtonState createState() =>
-      _ScrollPhysicsMenuButtonState();
+  _NormalMenuButtonState createState() => _NormalMenuButtonState();
 }
 
-class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
+class _NormalMenuButtonState extends State<NormalMenuButton> {
   String selectedKey;
 
-  List<String> keys = [
+  List<String> keys = <String>[
     'Low',
     'Medium',
     'High',
@@ -31,7 +30,7 @@ class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
 
   @override
   Widget build(BuildContext context) {
-    final Widget scrollChildButton = SizedBox(
+    final Widget normalChildButton = SizedBox(
       width: 93,
       height: 40,
       child: Padding(
@@ -45,7 +44,7 @@ class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 12,
               height: 17,
               child: FittedBox(
@@ -63,37 +62,34 @@ class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
-            'Menu button with scroll physics',
+            'Normal usage of menu button',
             style: widget.theme.textTheme.headline2.copyWith(
               fontSize: 18,
             ),
           ),
         ),
-        MenuButton(
-          child: scrollChildButton,
+        MenuButton<String>(
+          child: normalChildButton,
           items: keys,
           topDivider: true,
-          dontShowTheSameItemSelected: false,
-          scrollPhysics: AlwaysScrollableScrollPhysics(),
-          itemBuilder: (value) => Container(
+          itemBuilder: (String value) => Container(
             height: 40,
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16),
             child: Text(value),
           ),
           toggledChild: Container(
-            color: Colors.white,
-            child: scrollChildButton,
+            child: normalChildButton,
           ),
           divider: Container(
             height: 1,
             color: Colors.grey,
           ),
-          onItemSelected: (value) {
+          onItemSelected: (String value) {
             setState(() {
               selectedKey = value;
             });
@@ -102,9 +98,8 @@ class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
               border: Border.all(color: Colors.grey[300]),
               borderRadius: const BorderRadius.all(
                 Radius.circular(3.0),
-              ),
-              color: Colors.white),
-          onMenuButtonToggle: (isToggle) {
+              )),
+          onMenuButtonToggle: (bool isToggle) {
             print(isToggle);
           },
         ),
