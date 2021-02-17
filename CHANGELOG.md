@@ -1,3 +1,8 @@
+## 1.3.0 - 2021-02-17
+
+- Add itemBackgroundColor & menuButtonBackgroundColor to enable ripple effect when you press an item
+It's highly recommended to use them instead of the decoration color.
+
 ## 1.2.1 - 2020-06-16
 
 Fix width when MenuButton is on Expanded widget

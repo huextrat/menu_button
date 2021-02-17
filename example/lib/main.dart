@@ -74,6 +74,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   theme: theme,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: MenuButtonLabel(
+                  theme: theme,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: MenuButtonLabel(
+                  theme: theme,
+                ),
+              ),
             ],
           ),
         ),

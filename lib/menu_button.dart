@@ -21,6 +21,8 @@ class MenuButton<T> extends StatefulWidget {
     final this.selectedItem,
     final this.label,
     final this.labelDecoration,
+    final this.itemBackgroundColor = Colors.white,
+    final this.menuButtonBackgroundColor = Colors.white
   })  : assert(child != null),
         assert(items != null),
         assert(itemBuilder != null),
@@ -43,6 +45,8 @@ class MenuButton<T> extends StatefulWidget {
   final T selectedItem;
   final Text label;
   final LabelDecoration labelDecoration;
+  final Color itemBackgroundColor;
+  final Color menuButtonBackgroundColor;
 
   @override
   State<StatefulWidget> createState() => _MenuButtonState<T>();
@@ -71,12 +75,17 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
 
   void _updateButton() {
     setState(
-      () => button = InkWell(
-        child: Container(
-          decoration: widget.decoration,
-          child: widget.child,
+      () => button = Container(
+        decoration: widget.decoration,
+        child: Material(
+          color: widget.menuButtonBackgroundColor,
+          child: InkWell(
+            child: Container(
+              child: widget.child,
+            ),
+            onTap: togglePopup,
+          ),
         ),
-        onTap: togglePopup,
       ),
     );
   }
@@ -99,12 +108,17 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
   void initState() {
     super.initState();
     setState(
-      () => button = InkWell(
-        child: Container(
-          decoration: widget.decoration,
-          child: widget.child,
+      () => button = Container(
+        decoration: widget.decoration,
+        child: Material(
+          color: widget.menuButtonBackgroundColor,
+          child: InkWell(
+            child: Container(
+              child: widget.child,
+            ),
+            onTap: togglePopup,
+          ),
         ),
-        onTap: togglePopup,
       ),
     );
     _updateLabelDecoration();
@@ -189,6 +203,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         .map((T value) => _MenuItem<T>(
               value: value,
               child: widget.itemBuilder(value),
+              itemBackgroundColor: widget.itemBackgroundColor,
             ))
         .toList();
     final RenderBox button = context.findRenderObject() as RenderBox;
@@ -223,6 +238,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         popupHeight: widget.popupHeight,
         edgeMargin: widget.edgeMargin,
         crossTheEdge: widget.crossTheEdge,
+        itemBackgroundColor: widget.itemBackgroundColor,
       ).then<void>((T newValue) {
         setState(() => toggledMenu = !toggledMenu);
         widget.onMenuButtonToggle(toggledMenu);
@@ -250,6 +266,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
     double popupHeight,
     bool crossTheEdge,
     double edgeMargin,
+    Color itemBackgroundColor,
   }) =>
       Navigator.push(
         context,
@@ -264,7 +281,8 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
             popupHeight: popupHeight,
             crossTheEdge: crossTheEdge,
             edgeMargin: edgeMargin,
-            buttonWidth: buttonWidth),
+            buttonWidth: buttonWidth,
+            itemBackgroundColor: itemBackgroundColor),
       );
 }
 
@@ -281,6 +299,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
     final this.crossTheEdge,
     final this.edgeMargin,
     final this.buttonWidth,
+    final this.itemBackgroundColor
   });
 
   final RelativeRect position;
@@ -294,6 +313,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
   final bool crossTheEdge;
   final double edgeMargin;
   final double buttonWidth;
+  final Color itemBackgroundColor;
 
   @override
   Color get barrierColor => null;
@@ -339,6 +359,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
                 crossTheEdge: crossTheEdge,
                 edgeMargin: edgeMargin,
                 buttonWidth: buttonWidth,
+                itemBackgroundColor: itemBackgroundColor,
               ),
             );
           },
@@ -378,6 +399,7 @@ class _Menu<T> extends StatefulWidget {
     this.edgeMargin,
     this.crossTheEdge,
     @required this.buttonWidth,
+    this.itemBackgroundColor,
   }) : super(key: key);
 
   final _MenuRoute<T> route;
@@ -386,6 +408,7 @@ class _Menu<T> extends StatefulWidget {
   final bool crossTheEdge;
   final double edgeMargin;
   final double buttonWidth;
+  final Color itemBackgroundColor;
 
   @override
   __MenuState<T> createState() => __MenuState<T>();
@@ -466,7 +489,7 @@ class __MenuState<T> extends State<_Menu<T>> {
                   physics: widget.scrollPhysics ??
                       const NeverScrollableScrollPhysics(),
                   child: ListBody(children: <Widget>[
-                    _MenuButtonToggledChild(child: widget.route.toggledChild),
+                    _MenuButtonToggledChild(child: widget.route.toggledChild, itemBackgroundColor: widget.itemBackgroundColor,),
                     Align(
                       alignment: AlignmentDirectional.topStart,
                       widthFactor: 1.0,
@@ -489,29 +512,37 @@ class __MenuState<T> extends State<_Menu<T>> {
 }
 
 class _MenuButtonToggledChild extends StatelessWidget {
-  const _MenuButtonToggledChild({@required final this.child});
+  const _MenuButtonToggledChild({@required final this.child, this.itemBackgroundColor});
 
   final Widget child;
+  final Color itemBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.of(context).pop(),
-      child: child,
+    return Material(
+      color: itemBackgroundColor,
+      child: InkWell(
+        onTap: () => Navigator.of(context).pop(),
+        child: child,
+      ),
     );
   }
 }
 
 class _MenuItem<T> extends StatelessWidget {
-  const _MenuItem({this.value, @required final this.child});
+  const _MenuItem({this.value, @required final this.child, this.itemBackgroundColor});
 
   final T value;
   final Widget child;
+  final Color itemBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        onTap: () => Navigator.of(context).pop<T>(value), child: child);
+    return Material(
+      color: itemBackgroundColor,
+      child: InkWell(
+          onTap: () => Navigator.of(context).pop<T>(value), child: child),
+    );
   }
 }
 

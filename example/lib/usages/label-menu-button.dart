@@ -95,7 +95,6 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
             child: Text(value),
           ),
           toggledChild: Container(
-            color: Colors.white,
             child: childButtonWithoutSameItem,
           ),
           divider: Container(
@@ -112,8 +111,9 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
             borderRadius: const BorderRadius.all(
               Radius.circular(3.0),
             ),
-            color: Colors.white,
           ),
+          itemBackgroundColor: Colors.blue,
+          menuButtonBackgroundColor: Colors.green,
           onMenuButtonToggle: (isToggle) {
             print(isToggle);
           },
