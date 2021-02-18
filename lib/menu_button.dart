@@ -215,7 +215,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
   void togglePopup() {
     setState(() => toggledMenu = !toggledMenu);
     widget.onMenuButtonToggle(toggledMenu);
-    if (widget.showSelectedItemOnList) {
+    if (!widget.showSelectedItemOnList) {
       setState(() => selectedItem = widget.selectedItem);
       MenuButtonUtils.showSelectedItemOnList(
           oldItem, selectedItem, widget.items);
@@ -265,7 +265,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         setState(() => toggledMenu = !toggledMenu);
         widget.onMenuButtonToggle(toggledMenu);
 
-        if (widget.showSelectedItemOnList) {
+        if (!widget.showSelectedItemOnList) {
           setState(() => oldItem = selectedItem);
           setState(() => selectedItem = newValue);
         }
@@ -480,12 +480,14 @@ class __MenuState<T> extends State<_Menu<T>> {
         animation: widget.route.animation,
         builder: (BuildContext context, Widget child) => Opacity(
           opacity: opacity.evaluate(widget.route.animation),
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 100),
             key: key,
             width: width ?? widget.buttonWidth,
             height: widget.popupHeight,
             decoration: BoxDecoration(
-              color: widget.route.decoration.color,
+              color: widget.route.decoration.color ??
+                  widget.route.itemBackgroundColor,
               border: widget.route.decoration.border,
               borderRadius: widget.route.decoration.borderRadius,
               boxShadow: <BoxShadow>[

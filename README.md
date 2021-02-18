@@ -6,7 +6,7 @@ A popup menu button widget with handsome design and easy to use.
 
 ## Installations
 
-Add `menu_button: ^1.3.0` in your `pubspec.yaml` dependencies. And import it:
+Add `menu_button: ^1.3.1` in your `pubspec.yaml` dependencies. And import it:
 
 ```dart
 import 'package:menu_button/menu_button.dart';
