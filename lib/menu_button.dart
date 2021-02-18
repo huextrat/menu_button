@@ -480,7 +480,8 @@ class __MenuState<T> extends State<_Menu<T>> {
         animation: widget.route.animation,
         builder: (BuildContext context, Widget child) => Opacity(
           opacity: opacity.evaluate(widget.route.animation),
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 100),
             key: key,
             width: width ?? widget.buttonWidth,
             height: widget.popupHeight,
