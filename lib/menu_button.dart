@@ -485,7 +485,8 @@ class __MenuState<T> extends State<_Menu<T>> {
             width: width ?? widget.buttonWidth,
             height: widget.popupHeight,
             decoration: BoxDecoration(
-              color: widget.route.decoration.color,
+              color: widget.route.decoration.color ??
+                  widget.route.itemBackgroundColor,
               border: widget.route.decoration.border,
               borderRadius: widget.route.decoration.borderRadius,
               boxShadow: <BoxShadow>[

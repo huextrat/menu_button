@@ -1,3 +1,7 @@
+## 1.3.1 - 2021-02-18
+
+- Fix: add the item background color by default when the list is scrollable and no color is defined in `decoration` property
+
 ## 1.3.0 - 2021-02-17
 
 - Add `itemBackgroundColor` & `menuButtonBackgroundColor` to enable ripple effect when you press an item
