@@ -215,7 +215,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
   void togglePopup() {
     setState(() => toggledMenu = !toggledMenu);
     widget.onMenuButtonToggle(toggledMenu);
-    if (widget.showSelectedItemOnList) {
+    if (!widget.showSelectedItemOnList) {
       setState(() => selectedItem = widget.selectedItem);
       MenuButtonUtils.showSelectedItemOnList(
           oldItem, selectedItem, widget.items);
@@ -265,7 +265,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         setState(() => toggledMenu = !toggledMenu);
         widget.onMenuButtonToggle(toggledMenu);
 
-        if (widget.showSelectedItemOnList) {
+        if (!widget.showSelectedItemOnList) {
           setState(() => oldItem = selectedItem);
           setState(() => selectedItem = newValue);
         }
