@@ -14,7 +14,7 @@ Flutter widget to display a popup menu button very simply and easily customizabl
 
 ## Installations
 
-Add `menu_button: ^1.3.1` in your `pubspec.yaml` dependencies. And import it:
+Add `menu_button: ^1.3.1+1` in your `pubspec.yaml` dependencies. And import it:
 
 ```dart
 import 'package:menu_button/menu_button.dart';

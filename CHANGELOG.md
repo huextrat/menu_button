@@ -1,3 +1,7 @@
+## 1.3.1+1 - 2021-03-03
+
+- Update README to make it clearer
+
 ## 1.3.1 - 2021-02-18
 
 - Fix: add the item background color by default when the list is scrollable and no color is defined in `decoration` property
