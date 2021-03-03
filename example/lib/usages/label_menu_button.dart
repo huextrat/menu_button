@@ -3,8 +3,8 @@ import 'package:menu_button/menu_button.dart';
 
 class MenuButtonLabel extends StatefulWidget {
   const MenuButtonLabel({
-    Key key,
-    @required this.theme,
+    Key? key,
+    required this.theme,
   }) : super(key: key);
 
   final ThemeData theme;
@@ -14,8 +14,8 @@ class MenuButtonLabel extends StatefulWidget {
 }
 
 class _MenuButtonLabelState extends State<MenuButtonLabel> {
-  String selectedKey;
-  String initialValue;
+  late String selectedKey;
+  late String initialValue;
 
   List<String> keys = <String>[
     'Low',
@@ -67,7 +67,7 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
             'Menu button usage with label',
-            style: widget.theme.textTheme.headline2.copyWith(
+            style: widget.theme.textTheme.headline2!.copyWith(
               fontSize: 18,
             ),
           ),
@@ -83,9 +83,10 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
               fontSize: 12,
             ),
           ),
-          labelDecoration: LabelDecoration(
+          labelDecoration: const LabelDecoration(
             verticalMenuPadding: 12,
-            // background: Colors.red
+            background: Colors.white,
+            leftPosition: 6
           ),
           itemBuilder: (String value) => Container(
             height: 40,
@@ -96,17 +97,13 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
           toggledChild: Container(
             child: childButtonWithoutSameItem,
           ),
-          divider: Container(
-            height: 1,
-            color: Colors.grey,
-          ),
           onItemSelected: (String value) {
             setState(() {
               selectedKey = value;
             });
           },
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[300]),
+            border: Border.all(color: Colors.grey[300]!),
             borderRadius: const BorderRadius.all(
               Radius.circular(3.0),
             ),

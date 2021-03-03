@@ -3,8 +3,8 @@ import 'package:menu_button/menu_button.dart';
 
 class ScrollPhysicsMenuButton extends StatefulWidget {
   const ScrollPhysicsMenuButton({
-    Key key,
-    @required this.theme,
+    Key? key,
+    required this.theme,
   }) : super(key: key);
 
   final ThemeData theme;
@@ -15,7 +15,7 @@ class ScrollPhysicsMenuButton extends StatefulWidget {
 }
 
 class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
-  String selectedKey;
+  late String selectedKey;
 
   List<String> keys = <String>[
     'Low',
@@ -68,7 +68,7 @@ class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
             'Menu button with scroll physics',
-            style: widget.theme.textTheme.headline2.copyWith(
+            style: widget.theme.textTheme.headline2!.copyWith(
               fontSize: 18,
             ),
           ),
@@ -97,7 +97,7 @@ class _ScrollPhysicsMenuButtonState extends State<ScrollPhysicsMenuButton> {
             });
           },
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey[300]),
+              border: Border.all(color: Colors.grey[300]!),
               borderRadius: const BorderRadius.all(
                 Radius.circular(3.0),
               )),

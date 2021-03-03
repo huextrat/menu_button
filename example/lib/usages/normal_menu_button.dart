@@ -3,8 +3,8 @@ import 'package:menu_button/menu_button.dart';
 
 class NormalMenuButton extends StatefulWidget {
   const NormalMenuButton({
-    Key key,
-    @required this.theme,
+    Key? key,
+    required this.theme,
   }) : super(key: key);
 
   final ThemeData theme;
@@ -14,7 +14,7 @@ class NormalMenuButton extends StatefulWidget {
 }
 
 class _NormalMenuButtonState extends State<NormalMenuButton> {
-  String selectedKey;
+  late String selectedKey;
 
   List<String> keys = <String>[
     'Low',
@@ -67,7 +67,7 @@ class _NormalMenuButtonState extends State<NormalMenuButton> {
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
             'Normal usage of menu button',
-            style: widget.theme.textTheme.headline2.copyWith(
+            style: widget.theme.textTheme.headline2!.copyWith(
               fontSize: 18,
             ),
           ),
@@ -94,11 +94,6 @@ class _NormalMenuButtonState extends State<NormalMenuButton> {
               selectedKey = value;
             });
           },
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey[300]),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(3.0),
-              )),
           onMenuButtonToggle: (bool isToggle) {
             print(isToggle);
           },

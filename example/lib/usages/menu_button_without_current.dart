@@ -3,8 +3,8 @@ import 'package:menu_button/menu_button.dart';
 
 class MenuButtonWithoutShowingSameSelectedIitem extends StatefulWidget {
   const MenuButtonWithoutShowingSameSelectedIitem({
-    Key key,
-    @required this.theme,
+    Key? key,
+    required this.theme,
   }) : super(key: key);
 
   final ThemeData theme;
@@ -16,8 +16,8 @@ class MenuButtonWithoutShowingSameSelectedIitem extends StatefulWidget {
 
 class _MenuButtonWithoutShowingSameSelectedIitemState
     extends State<MenuButtonWithoutShowingSameSelectedIitem> {
-  String selectedKey;
-  String initialValue;
+  late String selectedKey;
+  late String initialValue;
 
   List<String> keys = <String>[
     'Low',
@@ -69,7 +69,7 @@ class _MenuButtonWithoutShowingSameSelectedIitemState
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
             'Usage of menu button without showing the same selected item',
-            style: widget.theme.textTheme.headline2.copyWith(
+            style: widget.theme.textTheme.headline2!.copyWith(
               fontSize: 18,
             ),
           ),
@@ -99,7 +99,7 @@ class _MenuButtonWithoutShowingSameSelectedIitemState
             });
           },
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[300]),
+            border: Border.all(color: Colors.grey[300]!),
             borderRadius: const BorderRadius.all(
               Radius.circular(3.0),
             ),

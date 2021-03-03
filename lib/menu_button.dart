@@ -5,16 +5,19 @@ import 'package:flutter/material.dart';
 /// Custom MenuButton to display a menu button following Material Design example
 class MenuButton<T> extends StatefulWidget {
   const MenuButton(
-      {@required final this.child,
-      @required final this.items,
-      @required final this.itemBuilder,
+      {required final this.child,
+      required final this.items,
+      required final this.itemBuilder,
       final this.toggledChild,
-      final this.divider,
+      final this.divider = const Divider(
+        height: 1,
+        color: Colors.grey,
+      ),
       final this.topDivider = true,
       final this.onItemSelected,
       final this.decoration,
       final this.onMenuButtonToggle,
-      final this.scrollPhysics,
+      final this.scrollPhysics = const NeverScrollableScrollPhysics(),
       final this.popupHeight,
       final this.crossTheEdge = false,
       final this.edgeMargin = 0.0,
@@ -24,46 +27,58 @@ class MenuButton<T> extends StatefulWidget {
       final this.labelDecoration,
       final this.itemBackgroundColor = Colors.white,
       final this.menuButtonBackgroundColor = Colors.white})
-      : assert(child != null),
-        assert(items != null),
-        assert(itemBuilder != null),
-        assert(showSelectedItemOnList || selectedItem != null);
+      : assert(showSelectedItemOnList || selectedItem != null);
 
+  /// Widget to display the default button to trigger the menu button
   final Widget child;
-  final Widget toggledChild;
+
+  /// Same as child but when the menu button is opened
+  final Widget? toggledChild;
+
+  /// A widget to design each item of the menu button
   final MenuItemBuilder<T> itemBuilder;
 
-  /// Divider widget
+  /// Divider widget [default = true]
   final Widget divider;
 
-  /// Top Divider visibility [default = true]
+  /// Top Divider visibility [default = Divider(height: 1, color: Colors.grey)]
   final bool topDivider;
 
   /// List of all items available on the menu
   final List<T> items;
 
   /// Action to do when an item is selected
-  final MenuItemSelected<T> onItemSelected;
-  final BoxDecoration decoration;
-  final MenuButtonToggleCallback onMenuButtonToggle;
+  final MenuItemSelected<T>? onItemSelected;
 
-  /// Determines the scroll physics
+  /// A custom decoration for menu button
+  final BoxDecoration? decoration;
+
+  /// Function triggered when menu button is triggered
+  final MenuButtonToggleCallback? onMenuButtonToggle;
+
+  /// Determines the scroll physics [default = NeverScrollableScrollPhysics()]
   final ScrollPhysics scrollPhysics;
 
   /// Force a define height for the popup view
-  final double popupHeight;
+  final double? popupHeight;
+
+  /// Set it to true if you want the button to expand
   final bool crossTheEdge;
+
+  /// Prevent the button to not touch the edge
   final double edgeMargin;
 
-  /// Display or not the selected item on the list [default = false]
+  /// Display or not the selected item on the list [default = true]
   final bool showSelectedItemOnList;
 
   /// Define the selected item
-  final T selectedItem;
+  final T? selectedItem;
 
   /// Add a label on top of the menu button as Material design
-  final Text label;
-  final LabelDecoration labelDecoration;
+  final Text? label;
+
+  /// Custom LabelDecoration if you use a label
+  final LabelDecoration? labelDecoration;
 
   /// Background color of items [default = Colors.white]
   final Color itemBackgroundColor;
@@ -76,21 +91,22 @@ class MenuButton<T> extends StatefulWidget {
 }
 
 class _MenuButtonState<T> extends State<MenuButton<T>> {
-  T oldItem;
-  T selectedItem;
+  T? oldItem;
+  late T selectedItem;
 
-  LabelDecoration labelDecoration;
-  Size labelTextSize;
+  late LabelDecoration labelDecoration;
+  late Size labelTextSize;
   bool toggledMenu = false;
-  Widget button;
-  double buttonWidth;
+  late Widget button;
+  late double buttonWidth;
+  late BoxDecoration decoration;
 
   void _updateLabelTextSize() {
     if (widget.label != null) {
       setState(
         () => labelTextSize = MenuButtonUtils.getTextSize(
-          widget.label.data,
-          widget.label.style,
+          widget.label!.data,
+          widget.label!.style,
         ),
       );
     }
@@ -99,7 +115,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
   void _updateButton() {
     setState(
       () => button = Container(
-        decoration: widget.decoration,
+        decoration: decoration,
         child: Material(
           color: widget.menuButtonBackgroundColor,
           child: InkWell(
@@ -116,12 +132,15 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
   void _updateLabelDecoration() {
     setState(
       () {
-        if (widget.labelDecoration == null) {
-          labelDecoration = LabelDecoration(
-            verticalMenuPadding: 12,
-          );
-        } else {
-          labelDecoration = widget.labelDecoration;
+        if (widget.label == null && widget.labelDecoration == null) {
+          labelDecoration = const LabelDecoration(
+              leftPosition: 0,
+              verticalMenuPadding: 0,
+              background: Colors.transparent);
+        } else if (widget.label != null && widget.labelDecoration == null) {
+          labelDecoration = const LabelDecoration();
+        } else if (widget.label != null) {
+          labelDecoration = widget.labelDecoration!;
         }
       },
     );
@@ -131,18 +150,27 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
   void initState() {
     super.initState();
     setState(
-      () => button = Container(
-        decoration: widget.decoration,
-        child: Material(
-          color: widget.menuButtonBackgroundColor,
-          child: InkWell(
-            child: Container(
-              child: widget.child,
+      () {
+        decoration = widget.decoration ??
+            BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(3.0),
+              ),
+            );
+        button = Container(
+          decoration: decoration,
+          child: Material(
+            color: widget.menuButtonBackgroundColor,
+            child: InkWell(
+              child: Container(
+                child: widget.child,
+              ),
+              onTap: togglePopup,
             ),
-            onTap: togglePopup,
           ),
-        ),
-      ),
+        );
+      },
     );
     _updateLabelDecoration();
     _updateLabelTextSize();
@@ -173,7 +201,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
                 left: labelDecoration.leftPosition,
                 child: Container(
                   width: labelTextSize.width + labelDecoration.leftPosition,
-                  height: widget.decoration.border.top.width,
+                  height: decoration.border?.top.width ?? 0,
                   color: Theme.of(context).backgroundColor,
                 ),
               ),
@@ -181,8 +209,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
                 top: labelDecoration.verticalMenuPadding / 2,
                 left: labelDecoration.leftPosition,
                 child: Container(
-                  color: labelDecoration.background ??
-                      Theme.of(context).backgroundColor,
+                  color: labelDecoration.background,
                   width: labelTextSize.width + labelDecoration.leftPosition,
                   height: labelTextSize.height / 2,
                 ),
@@ -191,7 +218,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
                 top: labelDecoration.verticalMenuPadding,
                 left: labelDecoration.leftPosition,
                 child: Container(
-                  color: labelDecoration.background ?? widget.decoration.color,
+                  color: labelDecoration.background,
                   width: labelTextSize.width + labelDecoration.leftPosition,
                   height: labelTextSize.height / 2,
                 ),
@@ -214,9 +241,9 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
 
   void togglePopup() {
     setState(() => toggledMenu = !toggledMenu);
-    widget.onMenuButtonToggle(toggledMenu);
+    widget.onMenuButtonToggle!(toggledMenu);
     if (!widget.showSelectedItemOnList) {
-      setState(() => selectedItem = widget.selectedItem);
+      setState(() => selectedItem = widget.selectedItem!);
       MenuButtonUtils.showSelectedItemOnList(
           oldItem, selectedItem, widget.items);
     }
@@ -230,16 +257,11 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         .toList();
     final RenderBox button = context.findRenderObject() as RenderBox;
     final RenderBox overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
+        Overlay.of(context)!.context.findRenderObject() as RenderBox;
     buttonWidth = button.size.width;
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
-        button.localToGlobal(
-            Offset(
-                0,
-                widget.labelDecoration != null
-                    ? widget.labelDecoration.verticalMenuPadding
-                    : 0),
+        button.localToGlobal(Offset(0, labelDecoration.verticalMenuPadding),
             ancestor: overlay),
         button.localToGlobal(button.size.bottomRight(Offset.zero),
             ancestor: overlay),
@@ -255,40 +277,40 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         toggledChild: widget.toggledChild,
         divider: widget.divider,
         topDivider: widget.topDivider,
-        decoration: widget.decoration,
+        decoration: decoration,
         scrollPhysics: widget.scrollPhysics,
         popupHeight: widget.popupHeight,
         edgeMargin: widget.edgeMargin,
         crossTheEdge: widget.crossTheEdge,
         itemBackgroundColor: widget.itemBackgroundColor,
-      ).then<void>((T newValue) {
+      ).then<void>((T? newValue) {
         setState(() => toggledMenu = !toggledMenu);
-        widget.onMenuButtonToggle(toggledMenu);
+        widget.onMenuButtonToggle!(toggledMenu);
 
-        if (!widget.showSelectedItemOnList) {
+        if (!widget.showSelectedItemOnList && newValue != null) {
           setState(() => oldItem = selectedItem);
           setState(() => selectedItem = newValue);
         }
         if (mounted && newValue != null && widget.onItemSelected != null) {
-          widget.onItemSelected(newValue);
+          widget.onItemSelected!(newValue);
         }
       });
     }
   }
 
-  Future<T> _togglePopup({
-    @required BuildContext context,
-    @required RelativeRect position,
-    @required List<Widget> items,
-    Widget toggledChild,
-    Widget divider,
-    bool topDivider,
-    BoxDecoration decoration,
-    ScrollPhysics scrollPhysics,
-    double popupHeight,
-    bool crossTheEdge,
-    double edgeMargin,
-    Color itemBackgroundColor,
+  Future<T?> _togglePopup({
+    required BuildContext context,
+    required RelativeRect position,
+    required List<Widget> items,
+    required BoxDecoration decoration,
+    required bool topDivider,
+    required bool crossTheEdge,
+    required double edgeMargin,
+    required Color itemBackgroundColor,
+    required ScrollPhysics scrollPhysics,
+    required Widget divider,
+    double? popupHeight,
+    Widget? toggledChild,
   }) =>
       Navigator.push(
         context,
@@ -310,40 +332,40 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
 
 class _MenuRoute<T> extends PopupRoute<T> {
   _MenuRoute(
-      {final this.position,
-      final this.items,
-      final this.toggledChild,
-      final this.divider,
-      final this.topDivider,
-      final this.decoration,
-      final this.scrollPhysics,
+      {required final this.position,
+      required final this.items,
+      required final this.topDivider,
+      required final this.decoration,
+      required final this.crossTheEdge,
+      required final this.edgeMargin,
+      required final this.buttonWidth,
+      required final this.itemBackgroundColor,
+      required final this.scrollPhysics,
+      required final this.divider,
       final this.popupHeight,
-      final this.crossTheEdge,
-      final this.edgeMargin,
-      final this.buttonWidth,
-      final this.itemBackgroundColor});
+      final this.toggledChild});
 
   final RelativeRect position;
   final List<Widget> items;
-  final Widget toggledChild;
   final Widget divider;
   final bool topDivider;
   final BoxDecoration decoration;
   final ScrollPhysics scrollPhysics;
-  final double popupHeight;
   final bool crossTheEdge;
   final double edgeMargin;
   final double buttonWidth;
   final Color itemBackgroundColor;
+  final Widget? toggledChild;
+  final double? popupHeight;
 
   @override
-  Color get barrierColor => null;
+  Color? get barrierColor => null;
 
   @override
   bool get barrierDismissible => true;
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   Duration get transitionDuration => const Duration(milliseconds: 300);
@@ -411,23 +433,23 @@ class _MenuRouteLayout extends SingleChildLayoutDelegate {
 
 class _Menu<T> extends StatefulWidget {
   const _Menu({
-    Key key,
-    this.route,
-    this.scrollPhysics,
-    this.popupHeight,
-    this.edgeMargin,
-    this.crossTheEdge,
-    @required this.buttonWidth,
-    this.itemBackgroundColor,
+    Key? key,
+    required final this.route,
+    required this.edgeMargin,
+    required final this.crossTheEdge,
+    required this.buttonWidth,
+    required final this.itemBackgroundColor,
+    required final this.scrollPhysics,
+    final this.popupHeight,
   }) : super(key: key);
 
   final _MenuRoute<T> route;
   final ScrollPhysics scrollPhysics;
-  final double popupHeight;
   final bool crossTheEdge;
   final double edgeMargin;
   final double buttonWidth;
   final Color itemBackgroundColor;
+  final double? popupHeight;
 
   @override
   __MenuState<T> createState() => __MenuState<T>();
@@ -435,15 +457,15 @@ class _Menu<T> extends StatefulWidget {
 
 class __MenuState<T> extends State<_Menu<T>> {
   final GlobalKey key = GlobalKey();
-  double width;
+  double? width;
 
   @override
   void initState() {
     super.initState();
     if (widget.crossTheEdge == true) {
-      WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
+      WidgetsBinding.instance!.addPostFrameCallback((Duration timeStamp) {
         final RenderBox renderBox =
-            key.currentContext.findRenderObject() as RenderBox;
+            key.currentContext!.findRenderObject() as RenderBox;
         final Offset offset = renderBox.globalToLocal(Offset.zero);
         final double x = offset.dx.abs();
         final double screenWidth = MediaQuery.of(context).size.width;
@@ -477,9 +499,9 @@ class __MenuState<T> extends State<_Menu<T>> {
     return Material(
       color: Colors.transparent,
       child: AnimatedBuilder(
-        animation: widget.route.animation,
-        builder: (BuildContext context, Widget child) => Opacity(
-          opacity: opacity.evaluate(widget.route.animation),
+        animation: widget.route.animation!,
+        builder: (BuildContext context, Widget? child) => Opacity(
+          opacity: opacity.evaluate(widget.route.animation!),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 100),
             key: key,
@@ -493,13 +515,13 @@ class __MenuState<T> extends State<_Menu<T>> {
               boxShadow: <BoxShadow>[
                 BoxShadow(
                     color: Color.fromARGB(
-                        (20 * shadow.evaluate(widget.route.animation)).toInt(),
+                        (20 * shadow.evaluate(widget.route.animation!)).toInt(),
                         0,
                         0,
                         0),
                     offset: Offset(
-                        0.0, 3.0 * shadow.evaluate(widget.route.animation)),
-                    blurRadius: 5.0 * shadow.evaluate(widget.route.animation))
+                        0.0, 3.0 * shadow.evaluate(widget.route.animation!)),
+                    blurRadius: 5.0 * shadow.evaluate(widget.route.animation!))
               ],
             ),
             child: ClipRRect(
@@ -507,17 +529,16 @@ class __MenuState<T> extends State<_Menu<T>> {
                   widget.route.decoration.borderRadius as BorderRadius,
               child: IntrinsicWidth(
                 child: SingleChildScrollView(
-                  physics: widget.scrollPhysics ??
-                      const NeverScrollableScrollPhysics(),
+                  physics: widget.scrollPhysics,
                   child: ListBody(children: <Widget>[
                     _MenuButtonToggledChild(
-                      child: widget.route.toggledChild,
+                      child: widget.route.toggledChild ?? Container(),
                       itemBackgroundColor: widget.itemBackgroundColor,
                     ),
                     Align(
                       alignment: AlignmentDirectional.topStart,
                       widthFactor: 1.0,
-                      heightFactor: height.evaluate(widget.route.animation),
+                      heightFactor: height.evaluate(widget.route.animation!),
                       child: SingleChildScrollView(
                         child: ListBody(
                           children: children,
@@ -537,7 +558,7 @@ class __MenuState<T> extends State<_Menu<T>> {
 
 class _MenuButtonToggledChild extends StatelessWidget {
   const _MenuButtonToggledChild(
-      {@required final this.child, this.itemBackgroundColor});
+      {required final this.child, required this.itemBackgroundColor});
 
   final Widget child;
   final Color itemBackgroundColor;
@@ -556,7 +577,9 @@ class _MenuButtonToggledChild extends StatelessWidget {
 
 class _MenuItem<T> extends StatelessWidget {
   const _MenuItem(
-      {this.value, @required final this.child, this.itemBackgroundColor});
+      {required this.value,
+      required final this.child,
+      required this.itemBackgroundColor});
 
   final T value;
   final Widget child;
@@ -573,19 +596,19 @@ class _MenuItem<T> extends StatelessWidget {
 }
 
 class LabelDecoration {
-  LabelDecoration({
-    @required this.verticalMenuPadding,
+  const LabelDecoration({
+    this.verticalMenuPadding = 12,
     this.leftPosition = 6,
     this.background = Colors.white,
   });
 
-  double verticalMenuPadding;
-  double leftPosition;
-  Color background;
+  final double verticalMenuPadding;
+  final double leftPosition;
+  final Color background;
 }
 
 class MenuButtonUtils {
-  static Size getTextSize(String text, TextStyle style) {
+  static Size getTextSize(String? text, TextStyle? style) {
     final TextPainter textPainter = TextPainter(
         text: TextSpan(text: text, style: style),
         maxLines: 1,
@@ -595,9 +618,9 @@ class MenuButtonUtils {
   }
 
   static Map<String, dynamic> showSelectedItemOnList(
-      dynamic oldSelected, dynamic selectedItem, List<Object> items) {
+      dynamic oldSelected, dynamic selectedItem, List<Object?> items) {
     if (oldSelected != selectedItem) {
-      final Map<String, Object> res = <String, Object>{
+      final Map<String, Object?> res = <String, Object?>{
         'oldSelected': oldSelected,
         'selectedItem': selectedItem,
         'items': items,
@@ -615,7 +638,7 @@ class MenuButtonUtils {
         }
       });
 
-      items.removeWhere((Object element) => element == selectedItem);
+      items.removeWhere((Object? element) => element == selectedItem);
       if (!isOldSelectedAlready) {
         items.add(oldSelected);
       }

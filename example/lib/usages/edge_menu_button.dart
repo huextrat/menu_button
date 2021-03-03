@@ -3,8 +3,8 @@ import 'package:menu_button/menu_button.dart';
 
 class EdgeMenuButton extends StatefulWidget {
   const EdgeMenuButton({
-    Key key,
-    @required this.theme,
+    Key? key,
+    required this.theme,
   }) : super(key: key);
 
   final ThemeData theme;
@@ -14,7 +14,7 @@ class EdgeMenuButton extends StatefulWidget {
 }
 
 class _EdgeMenuButtonState extends State<EdgeMenuButton> {
-  String selectedKey;
+  late String selectedKey;
 
   List<String> keys = <String>[
     'Lorem ipsum',
@@ -67,7 +67,7 @@ class _EdgeMenuButtonState extends State<EdgeMenuButton> {
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Text(
             'Menu button not crossing the edge',
-            style: widget.theme.textTheme.headline2.copyWith(
+            style: widget.theme.textTheme.headline2!.copyWith(
               fontSize: 18,
             ),
           ),
@@ -101,7 +101,7 @@ class _EdgeMenuButtonState extends State<EdgeMenuButton> {
             });
           },
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey[300]),
+              border: Border.all(color: Colors.grey[300]!),
               borderRadius: const BorderRadius.all(
                 Radius.circular(3.0),
               )),

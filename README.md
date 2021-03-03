@@ -10,11 +10,10 @@ Flutter widget to display a popup menu button very simply and easily customizabl
 - [Documentation](https://pub.dev/documentation/menu_button/latest/menu_button/MenuButton-class.html)
 - [Pub Package](https://pub.dev/packages/menu_button)
 - [GitHub Repository](https://github.com/huextrat/menu_button)
-- [Online Demo](https://appetize.io/app/w352kxbnz51c6pfvxrdvxcb3xw?device=nexus5&scale=100&orientation=landscape&osVersion=8.1&deviceColor=black)
 
 ## Installations
 
-Add `menu_button: ^1.3.1+1` in your `pubspec.yaml` dependencies. And import it:
+Add `menu_button: ^1.4.0+1` in your `pubspec.yaml` dependencies. And import it:
 
 ```dart
 import 'package:menu_button/menu_button.dart';
@@ -53,19 +52,11 @@ MenuButton<String>(
   toggledChild: Container(
     child: normalChildButton,
   ),
-  divider: Container(
-    height: 1,
-    color: Colors.grey,
-  ),
   onItemSelected: (String value) {
     setState(() {
       selectedKey = value;
     });
   },
-  decoration: BoxDecoration(
-    border: Border.all(color: Colors.grey[300]),
-    borderRadius: const BorderRadius.all(Radius.circular(3.0))
-  ),
   onMenuButtonToggle: (bool isToggle) {
     print(isToggle);
   },
@@ -112,25 +103,25 @@ Of course you can make your own according to your needs.
 | `child` | A widget to display the default button to trigger the menu button |
 | `items` | The list that contains all values that you want to display on the menu button |
 | `itemBuilder` | A widget to design each item of the menu button |
-| `toggledChild` | Same as child but when the menu button is opened |
-| `divider` | A custom divider between each items |
 | `onItemSelected` | Function triggered when an item is selected |
-| `decoration` | A custom decoration for menu button |
 | `onMenuButtonToggle` | Function triggered when menu button is triggered (`true` if displayed, `false` if not) |
+| `toggledChild` | Same as child but when the menu button is opened |
 
 ## More Parameters
 
 | Parameter | Description |
 |---|---|
-| `scrollPhysics` | By default items are not scrollable (`NeverScrollableScrollPhysics`), add a ScrollPhysics to enable it, for instance `AlwaysScrollableScrollPhysics` |
-| `popupHeight` | By default `popupHeight` is automatically calculated but if you need a custom height use this property |
 | `crossTheEdge` | By default `false` you can set it to `true` if you want the button to expand |
+| `divider` | A custom divider between each items |
+| `decoration` | A custom decoration for menu button |
 | `edgeMargin` | By default `0` add a custom value to prevent the button to not touch the edge, check the example `edge_menu_button.dart` for more information |
-| `showSelectedItemOnList` | By default `true`, set it to `false` if you don't want the selected items in the list |
+| `itemBackgroundColor` | By default `Colors.white` add custom Colors to customize the background of every items |
 | `label` | Add a widget to display a custom label as MaterialDesign on top of the button, check `label_menu_button.dart` for more information |
 | `labelDecoration` | If you use a `label` you can set a custom `LabelDecoration` |
-| `itemBackgroundColor` | By default `Colors.white` add custom Colors to customize the background of every items |
 | `menuButtonBackgroundColor` | By default `Colors.white` add custom Colors to customize the background of the menu button |
+| `popupHeight` | By default `popupHeight` is automatically calculated but if you need a custom height use this property |
+| `scrollPhysics` | By default items are not scrollable (`NeverScrollableScrollPhysics`), add a ScrollPhysics to enable it, for instance `AlwaysScrollableScrollPhysics` |
+| `showSelectedItemOnList` | By default `true`, set it to `false` if you don't want the selected items in the list |
 
 ---
 
