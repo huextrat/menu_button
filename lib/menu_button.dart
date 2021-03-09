@@ -91,14 +91,28 @@ class MenuButton<T> extends StatefulWidget {
 }
 
 class _MenuButtonState<T> extends State<MenuButton<T>> {
+  /// Keep an instance of old selected item if necessary
   T? oldItem;
+
+  /// The current selected item
   late T selectedItem;
 
+  /// Custom LabelDecoration if you use a label
   late LabelDecoration labelDecoration;
+
+  /// Automatically calculated depending on the label [Text] widget
   late Size labelTextSize;
+
+  /// Value containing the current state of the menu
   bool toggledMenu = false;
+
+  /// The button used as [child]
   late Widget button;
+
+  /// With of the button which is automatically calculated
   late double buttonWidth;
+
+  /// A custom decoration for menu button
   late BoxDecoration decoration;
 
   void _updateLabelTextSize() {
@@ -112,6 +126,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
     }
   }
 
+  /// Update the button and make it clickable
   void _updateButton() {
     setState(
       () => button = Container(
@@ -129,6 +144,8 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
     );
   }
 
+  /// Define the label decoration if label is used
+  /// Default label decoration of parameter is not used or your custom label decoration
   void _updateLabelDecoration() {
     setState(
       () {
@@ -239,6 +256,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
           );
   }
 
+  /// The method to toggle the popup when button is pressed
   void togglePopup() {
     setState(() => toggledMenu = !toggledMenu);
     widget.onMenuButtonToggle!(toggledMenu);
@@ -330,6 +348,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
       );
 }
 
+/// A custom [PopupRoute] which is pushed on [Navigator] when menu button is toggled
 class _MenuRoute<T> extends PopupRoute<T> {
   _MenuRoute(
       {required final this.position,
@@ -345,17 +364,38 @@ class _MenuRoute<T> extends PopupRoute<T> {
       final this.popupHeight,
       final this.toggledChild});
 
+  /// Position of the popup
   final RelativeRect position;
+
+  /// List of all items available on the menu
   final List<Widget> items;
+
+  /// Divider widget
   final Widget divider;
+
+  /// Top Divider visibility
   final bool topDivider;
+
+  /// A custom decoration for menu button
   final BoxDecoration decoration;
+
+  /// Determines the scroll physics
   final ScrollPhysics scrollPhysics;
+
+  /// Expand the button width or not
   final bool crossTheEdge;
+
+  /// Prevent the button to not touch the edge
   final double edgeMargin;
+
+  /// With of the button which is automatically calculated
   final double buttonWidth;
+
+  /// Background color of items
   final Color itemBackgroundColor;
   final Widget? toggledChild;
+
+  /// Force a define height for the popup view
   final double? popupHeight;
 
   @override
@@ -444,11 +484,23 @@ class _Menu<T> extends StatefulWidget {
   }) : super(key: key);
 
   final _MenuRoute<T> route;
+
+  /// Determines the scroll physics
   final ScrollPhysics scrollPhysics;
+
+  /// Expand the button width or not
   final bool crossTheEdge;
+
+  /// Prevent the button to not touch the edge
   final double edgeMargin;
+
+  /// With of the button which is automatically calculated
   final double buttonWidth;
+
+  /// Background color of items
   final Color itemBackgroundColor;
+
+  /// Force a define height for the popup view
   final double? popupHeight;
 
   @override
@@ -457,6 +509,8 @@ class _Menu<T> extends StatefulWidget {
 
 class __MenuState<T> extends State<_Menu<T>> {
   final GlobalKey key = GlobalKey();
+
+  /// The calculated width if [crossTheEdge] is set to true
   double? width;
 
   @override
@@ -556,11 +610,15 @@ class __MenuState<T> extends State<_Menu<T>> {
   }
 }
 
+/// Class to build the menu button toggled child (button display when menu button is toggled)
 class _MenuButtonToggledChild extends StatelessWidget {
   const _MenuButtonToggledChild(
       {required final this.child, required this.itemBackgroundColor});
 
+  /// Child [Widget] used for the menu button when toggled
   final Widget child;
+
+  /// Background color of items
   final Color itemBackgroundColor;
 
   @override
@@ -575,14 +633,20 @@ class _MenuButtonToggledChild extends StatelessWidget {
   }
 }
 
+/// Class to build each menu item and make it clickable
 class _MenuItem<T> extends StatelessWidget {
   const _MenuItem(
       {required this.value,
       required final this.child,
       required this.itemBackgroundColor});
 
+  /// The value of the item
   final T value;
+
+  /// The child [Widget] of the item
   final Widget child;
+
+  /// The background color of the item
   final Color itemBackgroundColor;
 
   @override
@@ -595,6 +659,7 @@ class _MenuItem<T> extends StatelessWidget {
   }
 }
 
+/// Class to define a custom decoration for a label
 class LabelDecoration {
   const LabelDecoration({
     this.verticalMenuPadding = 12,
@@ -602,11 +667,19 @@ class LabelDecoration {
     this.background = Colors.white,
   });
 
+  /// Vertical padding of the label [default = 12]
   final double verticalMenuPadding;
+
+  /// Padding on the left side of the label [default = 6]
   final double leftPosition;
+
+  /// Background color of the label [default = Colors.white]
   final Color background;
 }
 
+/// Utils class with useful method
+/// [getTextSize] - Calculate text size from a [Text] widget
+/// [showSelectedItemOnList] - Create a new map without the selected item
 class MenuButtonUtils {
   static Size getTextSize(String? text, TextStyle? style) {
     final TextPainter textPainter = TextPainter(

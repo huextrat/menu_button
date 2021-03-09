@@ -1,3 +1,7 @@
+## 1.4.1 - 2021-03-09
+
+- More precise API Docs
+
 ## 1.4.0+1 - 2021-03-03
 
 - Null safety
