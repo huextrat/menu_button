@@ -1,3 +1,8 @@
+## 1.4.2 - 2021-03-23
+
+- Fix InkWell when radius is applied to decoration
+- `onMenuButtonToggle` is no more required
+
 ## 1.4.1 - 2021-03-09
 
 - More precise API Docs

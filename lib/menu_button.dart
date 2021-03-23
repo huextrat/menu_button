@@ -134,6 +134,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         child: Material(
           color: widget.menuButtonBackgroundColor,
           child: InkWell(
+            borderRadius: decoration.borderRadius as BorderRadius,
             child: Container(
               child: widget.child,
             ),
@@ -259,7 +260,9 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
   /// The method to toggle the popup when button is pressed
   void togglePopup() {
     setState(() => toggledMenu = !toggledMenu);
-    widget.onMenuButtonToggle!(toggledMenu);
+    if (widget.onMenuButtonToggle != null) {
+      widget.onMenuButtonToggle!(toggledMenu);
+    }
     if (!widget.showSelectedItemOnList) {
       setState(() => selectedItem = widget.selectedItem!);
       MenuButtonUtils.showSelectedItemOnList(
@@ -303,8 +306,9 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         itemBackgroundColor: widget.itemBackgroundColor,
       ).then<void>((T? newValue) {
         setState(() => toggledMenu = !toggledMenu);
-        widget.onMenuButtonToggle!(toggledMenu);
-
+        if (widget.onMenuButtonToggle != null) {
+          widget.onMenuButtonToggle!(toggledMenu);
+        }
         if (!widget.showSelectedItemOnList && newValue != null) {
           setState(() => oldItem = selectedItem);
           setState(() => selectedItem = newValue);
