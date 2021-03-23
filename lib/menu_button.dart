@@ -134,7 +134,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         child: Material(
           color: widget.menuButtonBackgroundColor,
           child: InkWell(
-            borderRadius: decoration.borderRadius as BorderRadius,
+            borderRadius: decoration.borderRadius != null ? decoration.borderRadius as BorderRadius : null,
             child: Container(
               child: widget.child,
             ),
@@ -569,7 +569,7 @@ class __MenuState<T> extends State<_Menu<T>> {
               color: widget.route.decoration.color ??
                   widget.route.itemBackgroundColor,
               border: widget.route.decoration.border,
-              borderRadius: widget.route.decoration.borderRadius,
+              borderRadius: widget.route.decoration.borderRadius != null ? widget.route.decoration.borderRadius : null,
               boxShadow: <BoxShadow>[
                 BoxShadow(
                     color: Color.fromARGB(
@@ -583,8 +583,7 @@ class __MenuState<T> extends State<_Menu<T>> {
               ],
             ),
             child: ClipRRect(
-              borderRadius:
-                  widget.route.decoration.borderRadius as BorderRadius,
+              borderRadius: widget.route.decoration.borderRadius != null ? widget.route.decoration.borderRadius as BorderRadius : BorderRadius.zero,
               child: IntrinsicWidth(
                 child: SingleChildScrollView(
                   physics: widget.scrollPhysics,
