@@ -4,30 +4,31 @@ import 'package:flutter/material.dart';
 
 /// Custom MenuButton to display a menu button following Material Design example
 class MenuButton<T> extends StatefulWidget {
-  const MenuButton(
-      {required final this.child,
-      required final this.items,
-      required final this.itemBuilder,
-      final this.toggledChild,
-      final this.divider = const Divider(
-        height: 1,
-        color: Colors.grey,
-      ),
-      final this.topDivider = true,
-      final this.onItemSelected,
-      final this.decoration,
-      final this.onMenuButtonToggle,
-      final this.scrollPhysics = const NeverScrollableScrollPhysics(),
-      final this.popupHeight,
-      final this.crossTheEdge = false,
-      final this.edgeMargin = 0.0,
-      final this.showSelectedItemOnList = true,
-      final this.selectedItem,
-      final this.label,
-      final this.labelDecoration,
-      final this.itemBackgroundColor = Colors.white,
-      final this.menuButtonBackgroundColor = Colors.white})
-      : assert(showSelectedItemOnList || selectedItem != null);
+  const MenuButton({
+    required final this.child,
+    required final this.items,
+    required final this.itemBuilder,
+    final this.toggledChild,
+    final this.divider = const Divider(
+      height: 1,
+      color: Colors.grey,
+    ),
+    final this.topDivider = true,
+    final this.onItemSelected,
+    final this.decoration,
+    final this.onMenuButtonToggle,
+    final this.scrollPhysics = const NeverScrollableScrollPhysics(),
+    final this.popupHeight,
+    final this.crossTheEdge = false,
+    final this.edgeMargin = 0.0,
+    final this.showSelectedItemOnList = true,
+    final this.selectedItem,
+    final this.label,
+    final this.labelDecoration,
+    final this.itemBackgroundColor = Colors.white,
+    final this.menuButtonBackgroundColor = Colors.white,
+    this.distanceBetweenFieldAndPopup,
+  }) : assert(showSelectedItemOnList || selectedItem != null);
 
   /// Widget to display the default button to trigger the menu button
   final Widget child;
@@ -86,6 +87,9 @@ class MenuButton<T> extends StatefulWidget {
   /// Background color of menu button [default = Colors.white]
   final Color menuButtonBackgroundColor;
 
+  /// The distance between the field and popup
+  final double? distanceBetweenFieldAndPopup;
+
   @override
   State<StatefulWidget> createState() => _MenuButtonState<T>();
 }
@@ -134,7 +138,9 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         child: Material(
           color: widget.menuButtonBackgroundColor,
           child: InkWell(
-            borderRadius: decoration.borderRadius != null ? decoration.borderRadius as BorderRadius : null,
+            borderRadius: decoration.borderRadius != null
+                ? decoration.borderRadius as BorderRadius
+                : null,
             child: Container(
               child: widget.child,
             ),
@@ -282,12 +288,25 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
     buttonWidth = button.size.width;
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
-        button.localToGlobal(Offset(0, labelDecoration.verticalMenuPadding),
-            ancestor: overlay),
-        button.localToGlobal(button.size.bottomRight(Offset.zero),
-            ancestor: overlay),
+        button.localToGlobal(
+          Offset(
+            0,
+            widget.distanceBetweenFieldAndPopup ??
+                labelDecoration.verticalMenuPadding,
+          ),
+          ancestor: overlay,
+        ),
+        button.localToGlobal(
+          button.size.bottomRight(
+            Offset(
+              0,
+              widget.distanceBetweenFieldAndPopup ?? 0,
+            ),
+          ),
+          ancestor: overlay,
+        ),
       ),
-      Offset.zero & overlay.size,
+      Offset.zero & button.size,
     );
 
     if (items.isNotEmpty) {
@@ -569,7 +588,9 @@ class __MenuState<T> extends State<_Menu<T>> {
               color: widget.route.decoration.color ??
                   widget.route.itemBackgroundColor,
               border: widget.route.decoration.border,
-              borderRadius: widget.route.decoration.borderRadius != null ? widget.route.decoration.borderRadius : null,
+              borderRadius: widget.route.decoration.borderRadius != null
+                  ? widget.route.decoration.borderRadius
+                  : null,
               boxShadow: <BoxShadow>[
                 BoxShadow(
                     color: Color.fromARGB(
@@ -583,7 +604,9 @@ class __MenuState<T> extends State<_Menu<T>> {
               ],
             ),
             child: ClipRRect(
-              borderRadius: widget.route.decoration.borderRadius != null ? widget.route.decoration.borderRadius as BorderRadius : BorderRadius.zero,
+              borderRadius: widget.route.decoration.borderRadius != null
+                  ? widget.route.decoration.borderRadius as BorderRadius
+                  : BorderRadius.zero,
               child: IntrinsicWidth(
                 child: SingleChildScrollView(
                   physics: widget.scrollPhysics,
