@@ -17,6 +17,7 @@ class MenuButton<T> extends StatefulWidget {
       final this.onItemSelected,
       final this.decoration,
       final this.onMenuButtonToggle,
+      final this.scrollController,
       final this.scrollPhysics = const NeverScrollableScrollPhysics(),
       final this.popupHeight,
       final this.crossTheEdge = false,
@@ -55,6 +56,9 @@ class MenuButton<T> extends StatefulWidget {
 
   /// Function triggered when menu button is triggered
   final MenuButtonToggleCallback? onMenuButtonToggle;
+
+  /// Determines the scroll controller [default = ScrollController()]
+  final ScrollController? scrollController;
 
   /// Determines the scroll physics [default = NeverScrollableScrollPhysics()]
   final ScrollPhysics scrollPhysics;
@@ -134,7 +138,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         child: Material(
           color: widget.menuButtonBackgroundColor,
           child: InkWell(
-            borderRadius: decoration.borderRadius != null ? decoration.borderRadius as BorderRadius : null,
+            borderRadius: decoration.borderRadius as BorderRadius?,
             child: Container(
               child: widget.child,
             ),
@@ -299,6 +303,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         divider: widget.divider,
         topDivider: widget.topDivider,
         decoration: decoration,
+        scrollController: widget.scrollController,
         scrollPhysics: widget.scrollPhysics,
         popupHeight: widget.popupHeight,
         edgeMargin: widget.edgeMargin,
@@ -329,6 +334,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
     required bool crossTheEdge,
     required double edgeMargin,
     required Color itemBackgroundColor,
+    required ScrollController? scrollController,
     required ScrollPhysics scrollPhysics,
     required Widget divider,
     double? popupHeight,
@@ -343,6 +349,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
             divider: divider,
             topDivider: topDivider,
             decoration: decoration,
+            scrollController: scrollController,
             scrollPhysics: scrollPhysics,
             popupHeight: popupHeight,
             crossTheEdge: crossTheEdge,
@@ -363,6 +370,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
       required final this.edgeMargin,
       required final this.buttonWidth,
       required final this.itemBackgroundColor,
+      required final this.scrollController,
       required final this.scrollPhysics,
       required final this.divider,
       final this.popupHeight,
@@ -382,6 +390,9 @@ class _MenuRoute<T> extends PopupRoute<T> {
 
   /// A custom decoration for menu button
   final BoxDecoration decoration;
+
+  /// Determines the scroll controller
+  final ScrollController? scrollController;
 
   /// Determines the scroll physics
   final ScrollPhysics scrollPhysics;
@@ -441,6 +452,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
               ),
               child: _Menu<T>(
                 route: this,
+                scrollController: scrollController,
                 scrollPhysics: scrollPhysics,
                 popupHeight: popupHeight,
                 crossTheEdge: crossTheEdge,
@@ -483,11 +495,15 @@ class _Menu<T> extends StatefulWidget {
     required final this.crossTheEdge,
     required this.buttonWidth,
     required final this.itemBackgroundColor,
+    required final this.scrollController,
     required final this.scrollPhysics,
     final this.popupHeight,
   }) : super(key: key);
 
   final _MenuRoute<T> route;
+
+  /// Determines the scroll controller
+  final ScrollController? scrollController;
 
   /// Determines the scroll physics
   final ScrollPhysics scrollPhysics;
@@ -531,12 +547,24 @@ class __MenuState<T> extends State<_Menu<T>> {
         setState(() => width = screenWidth - x - widget.edgeMargin);
       });
     }
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      if (widget.scrollController != null) {
+        Future<void>.delayed(
+          const Duration(milliseconds: 30),
+          () {
+            widget.scrollController!.jumpTo(
+              widget.scrollController!.initialScrollOffset,
+            );
+          },
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = <Widget>[];
-
     if (widget.route.topDivider) {
       children.add(widget.route.divider);
     }
@@ -569,7 +597,7 @@ class __MenuState<T> extends State<_Menu<T>> {
               color: widget.route.decoration.color ??
                   widget.route.itemBackgroundColor,
               border: widget.route.decoration.border,
-              borderRadius: widget.route.decoration.borderRadius != null ? widget.route.decoration.borderRadius : null,
+              borderRadius: widget.route.decoration.borderRadius,
               boxShadow: <BoxShadow>[
                 BoxShadow(
                     color: Color.fromARGB(
@@ -583,9 +611,11 @@ class __MenuState<T> extends State<_Menu<T>> {
               ],
             ),
             child: ClipRRect(
-              borderRadius: widget.route.decoration.borderRadius != null ? widget.route.decoration.borderRadius as BorderRadius : BorderRadius.zero,
+              borderRadius: (widget.route.decoration.borderRadius ??
+                  BorderRadius.zero) as BorderRadius?,
               child: IntrinsicWidth(
                 child: SingleChildScrollView(
+                  controller: widget.scrollController,
                   physics: widget.scrollPhysics,
                   child: ListBody(children: <Widget>[
                     _MenuButtonToggledChild(
