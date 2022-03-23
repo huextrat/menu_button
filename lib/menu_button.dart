@@ -2,12 +2,15 @@ library menu_button;
 
 import 'package:flutter/material.dart';
 
+enum DropVerticalDirection { down, up }
+
 /// Custom MenuButton to display a menu button following Material Design example
 class MenuButton<T> extends StatefulWidget {
   const MenuButton(
       {required final this.child,
       required final this.items,
       required final this.itemBuilder,
+      this.verticalDirection = DropVerticalDirection.down,
       final this.toggledChild,
       final this.divider = const Divider(
         height: 1,
@@ -28,6 +31,9 @@ class MenuButton<T> extends StatefulWidget {
       final this.itemBackgroundColor = Colors.white,
       final this.menuButtonBackgroundColor = Colors.white})
       : assert(showSelectedItemOnList || selectedItem != null);
+
+  /// Vertical direction of dropdown
+  final DropVerticalDirection verticalDirection;
 
   /// Widget to display the default button to trigger the menu button
   final Widget child;
@@ -134,7 +140,9 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         child: Material(
           color: widget.menuButtonBackgroundColor,
           child: InkWell(
-            borderRadius: decoration.borderRadius != null ? decoration.borderRadius as BorderRadius : null,
+            borderRadius: decoration.borderRadius != null
+                ? decoration.borderRadius as BorderRadius
+                : null,
             child: Container(
               child: widget.child,
             ),
@@ -280,15 +288,27 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
     final RenderBox overlay =
         Overlay.of(context)!.context.findRenderObject() as RenderBox;
     buttonWidth = button.size.width;
-    final RelativeRect position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        button.localToGlobal(Offset(0, labelDecoration.verticalMenuPadding),
-            ancestor: overlay),
-        button.localToGlobal(button.size.bottomRight(Offset.zero),
-            ancestor: overlay),
-      ),
-      Offset.zero & overlay.size,
-    );
+
+    final RelativeRect position = () {
+      final toDown = widget.verticalDirection == DropVerticalDirection.down;
+
+      final baseRect = RelativeRect.fromRect(
+        Rect.fromPoints(
+            button.localToGlobal(Offset(0, labelDecoration.verticalMenuPadding),
+                ancestor: overlay),
+            button.localToGlobal(button.size.bottomLeft(Offset.zero),
+                ancestor: overlay)),
+        Offset.zero & overlay.size,
+      );
+
+      if (toDown) {
+        return baseRect;
+      } else {
+        // center up
+        return RelativeRect.fromLTRB(baseRect.right - button.size.width,
+            baseRect.bottom, baseRect.left, baseRect.top);
+      }
+    }();
 
     if (items.isNotEmpty) {
       _togglePopup(
@@ -337,6 +357,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
       Navigator.push(
         context,
         _MenuRoute<T>(
+            direction: widget.verticalDirection,
             position: position,
             items: items,
             toggledChild: toggledChild,
@@ -365,6 +386,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
       required final this.itemBackgroundColor,
       required final this.scrollPhysics,
       required final this.divider,
+      required this.direction,
       final this.popupHeight,
       final this.toggledChild});
 
@@ -402,6 +424,9 @@ class _MenuRoute<T> extends PopupRoute<T> {
   /// Force a define height for the popup view
   final double? popupHeight;
 
+  /// Vertical direction of popup
+  final DropVerticalDirection direction;
+
   @override
   Color? get barrierColor => null;
 
@@ -427,31 +452,32 @@ class _MenuRoute<T> extends PopupRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) =>
-      MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        removeBottom: true,
-        removeLeft: true,
-        removeRight: true,
-        child: Builder(
-          builder: (BuildContext context) {
-            return CustomSingleChildLayout(
-              delegate: _MenuRouteLayout(
-                position,
-              ),
-              child: _Menu<T>(
-                route: this,
-                scrollPhysics: scrollPhysics,
-                popupHeight: popupHeight,
-                crossTheEdge: crossTheEdge,
-                edgeMargin: edgeMargin,
-                buttonWidth: buttonWidth,
-                itemBackgroundColor: itemBackgroundColor,
-              ),
-            );
-          },
-        ),
-      );
+      RotatedBox(
+          quarterTurns: direction == DropVerticalDirection.up ? 2 : 0,
+          child: MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            removeBottom: true,
+            removeLeft: true,
+            removeRight: true,
+            child: Builder(
+              builder: (BuildContext context) {
+                return CustomSingleChildLayout(
+                  delegate: _MenuRouteLayout(position),
+                  child: _Menu<T>(
+                    route: this,
+                    direction: direction,
+                    scrollPhysics: scrollPhysics,
+                    popupHeight: popupHeight,
+                    crossTheEdge: crossTheEdge,
+                    edgeMargin: edgeMargin,
+                    buttonWidth: buttonWidth,
+                    itemBackgroundColor: itemBackgroundColor,
+                  ),
+                );
+              },
+            ),
+          ));
 }
 
 /// Positioning of the menu on the screen.
@@ -478,6 +504,7 @@ class _MenuRouteLayout extends SingleChildLayoutDelegate {
 class _Menu<T> extends StatefulWidget {
   const _Menu({
     Key? key,
+    required this.direction,
     required final this.route,
     required this.edgeMargin,
     required final this.crossTheEdge,
@@ -506,6 +533,9 @@ class _Menu<T> extends StatefulWidget {
 
   /// Force a define height for the popup view
   final double? popupHeight;
+
+  /// Vertical direction of popup
+  final DropVerticalDirection direction;
 
   @override
   __MenuState<T> createState() => __MenuState<T>();
@@ -549,6 +579,8 @@ class __MenuState<T> extends State<_Menu<T>> {
       }
     }
 
+    final isToDown = widget.direction == DropVerticalDirection.down;
+
     final CurveTween opacity =
         CurveTween(curve: const Interval(0.0, 1.0 / 8.0));
     final CurveTween height = CurveTween(curve: const Interval(0.0, .9));
@@ -569,7 +601,7 @@ class __MenuState<T> extends State<_Menu<T>> {
               color: widget.route.decoration.color ??
                   widget.route.itemBackgroundColor,
               border: widget.route.decoration.border,
-              borderRadius: widget.route.decoration.borderRadius != null ? widget.route.decoration.borderRadius : null,
+              borderRadius: widget.route.decoration.borderRadius,
               boxShadow: <BoxShadow>[
                 BoxShadow(
                     color: Color.fromARGB(
@@ -582,27 +614,34 @@ class __MenuState<T> extends State<_Menu<T>> {
                     blurRadius: 5.0 * shadow.evaluate(widget.route.animation!))
               ],
             ),
-            child: ClipRRect(
-              borderRadius: widget.route.decoration.borderRadius != null ? widget.route.decoration.borderRadius as BorderRadius : BorderRadius.zero,
-              child: IntrinsicWidth(
-                child: SingleChildScrollView(
-                  physics: widget.scrollPhysics,
-                  child: ListBody(children: <Widget>[
-                    _MenuButtonToggledChild(
-                      child: widget.route.toggledChild ?? Container(),
-                      itemBackgroundColor: widget.itemBackgroundColor,
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.topStart,
-                      widthFactor: 1.0,
-                      heightFactor: height.evaluate(widget.route.animation!),
-                      child: SingleChildScrollView(
-                        child: ListBody(
-                          children: children,
-                        ),
-                      ),
-                    ),
-                  ]),
+            child: RotatedBox(
+              quarterTurns: !isToDown ? 2 : 0,
+              child: ClipRRect(
+                borderRadius: widget.route.decoration.borderRadius != null
+                    ? widget.route.decoration.borderRadius as BorderRadius
+                    : BorderRadius.zero,
+                child: IntrinsicWidth(
+                  child: SingleChildScrollView(
+                    physics: widget.scrollPhysics,
+                    child: ListBody(children: <Widget>[
+                      if (isToDown)
+                        _MenuButtonToggledChild(
+                            child: widget.route.toggledChild ?? Container(),
+                            itemBackgroundColor: widget.itemBackgroundColor),
+                      Align(
+                          alignment: AlignmentDirectional.topStart,
+                          widthFactor: 1.0,
+                          heightFactor:
+                              height.evaluate(widget.route.animation!),
+                          child: SingleChildScrollView(
+                              child: ListBody(
+                                  reverse: !isToDown, children: children))),
+                      if (!isToDown)
+                        _MenuButtonToggledChild(
+                            child: widget.route.toggledChild ?? Container(),
+                            itemBackgroundColor: widget.itemBackgroundColor),
+                    ]),
+                  ),
                 ),
               ),
             ),
