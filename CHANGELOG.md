@@ -1,3 +1,7 @@
+## 1.4.2+2 - 2022-03-23
+
+- Added `DropVerticalDirection` in `MenuButton`
+
 ## 1.4.2+1 - 2021-03-23
 
 - Fix InkWell when radius is applied to decoration

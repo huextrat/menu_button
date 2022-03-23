@@ -84,10 +84,9 @@ class _MenuButtonLabelState extends State<MenuButtonLabel> {
             ),
           ),
           labelDecoration: const LabelDecoration(
-            verticalMenuPadding: 12,
-            background: Colors.white,
-            leftPosition: 6
-          ),
+              verticalMenuPadding: 12,
+              background: Colors.white,
+              leftPosition: 6),
           itemBuilder: (String value) => Container(
             height: 40,
             alignment: Alignment.centerLeft,

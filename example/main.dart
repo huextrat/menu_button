@@ -1,9 +1,10 @@
-import 'package:example/usages/edge_menu_button.dart';
-import 'package:example/usages/label_menu_button.dart';
-import 'package:example/usages/menu_button_without_current.dart';
-import 'package:example/usages/normal_menu_button.dart';
-import 'package:example/usages/scroll_menu_button.dart';
 import 'package:flutter/material.dart';
+
+import './usages/edge_menu_button.dart';
+import './usages/label_menu_button.dart';
+import './usages/menu_button_without_current.dart';
+import './usages/normal_menu_button.dart';
+import './usages/scroll_menu_button.dart';
 
 void main() => runApp(MyApp());
 
